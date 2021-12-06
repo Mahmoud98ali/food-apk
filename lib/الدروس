@@ -1,0 +1,4009 @@
+
+
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_cor/NavigationDrawerWidget.dart';
+
+
+class HomePage extends StatefulWidget {
+
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+
+
+class _HomePageState extends State<HomePage> {
+
+  List notes =[
+    {"note" : "the product 1",
+      "image" :"images/m1.jpeg" },
+    {"note" : "the product 2",
+      "image" :"images/m2.jpg"
+    },
+    {"note":"the product 3",
+      "image" :"images/m3.jpg"
+    },
+    {"note" : "the product 4",
+      "image" :"images/m4.jpg"
+    },
+  ];
+
+
+  getUser(){
+  var user = FirebaseAuth.instance.currentUser ;
+  print(user.email);
+  }
+
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context)  {
+
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+
+
+          title: Text('Home Page'),
+          backgroundColor: Color(0XFF2274A5),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(Icons.add),
+          onPressed: (){
+            Navigator.of(context).pushReplacementNamed("addproduct");
+          },),
+        drawer: NavigationDrawerWidget(),
+        body: Container(
+          child: ListView.builder(
+            itemCount: notes.length,
+              itemBuilder: (context,i){
+              return Dismissible(key: Key("$i"),
+                  child: ListNotes(notes: notes[i],)
+              );
+              }
+          ),
+
+        ),
+      ),
+    );
+  }
+}
+
+
+class ListNotes extends StatelessWidget{
+  final notes ;
+  ListNotes({this.notes});
+  @override
+  Widget build(BuildContext context){
+        return Card(
+          child:Row(
+            children: [
+
+              Expanded(
+                flex: 2,
+                child: ListTile(
+                  title: Text("${notes["note"]}"),
+                  subtitle: Text("Price "),
+                  trailing: IconButton(onPressed: (){},icon: Icon(Icons.edit),),
+                ),
+              ),
+              Expanded(
+                  flex: 1,
+                  child: Image.asset("${notes["image"]}" ,
+                    fit: BoxFit.fill,
+                    height: 130 ,
+                  )
+              ),
+
+            ],
+          )
+        );
+  }
+}
+
+
+
+
+
+
+
+
+
+.................................................................................
+100
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_cor/%20crud/addproduct.dart';
+import 'package:flutter_cor/home/homepage.dart';
+import 'package:flutter_cor/login.dart';
+import 'package:flutter_cor/signup.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:splashscreen/splashscreen.dart';
+
+bool islogin;
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return new SplashScreen(
+      title: new Text(
+        'Welcome In SplashScreen',
+        style: new TextStyle(fontWeight: FontWeight.bold,
+            fontSize: 20.0),
+      ),
+      seconds: 10,
+      backgroundColor: Colors.black,
+      image: new Image.asset("images/pagemain1.png"),
+      loaderColor: Colors.blue,
+      photoSize: 120,
+      navigateAfterSeconds: ForSplash(),
+    );
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  var user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    islogin = false;
+  } else {
+    islogin = true;
+  }
+  runApp(ForSplash());
+}
+
+class ForSplash extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: islogin == false ? Login() : HomePage(),
+        // هي ال theme ستاندر لكتير شغلات ممكن خطوط او ازرار الونها ..الخ
+        theme: ThemeData(
+            primaryColor: Colors.green,
+            // ignore: deprecated_member_use
+            buttonColor: Colors.green,
+            textTheme: TextTheme(
+                headline6: TextStyle(fontSize: 20, color: Colors.white))),
+        routes: {
+          "login": (context) => Login(),
+          "signup": (context) => SignUp(),
+          "homepage": (context) => HomePage(),
+          "addproduct": (context) => AddProduct(),
+        });
+  }
+}
+
+
+
+
+100
+.................................................................................
+99
+
+Drawer(
+
+          child: Column(
+            children: [
+              UserAccountsDrawerHeader( // هذه الخاصية جاهزة للإيميل
+                currentAccountPicture: CircleAvatar(backgroundColor: Colors.deepPurple,child: Text("M"),),
+                accountName: Text("Anythings"),
+                accountEmail: Text("mahmoudad2013@hotmail.com"),
+                arrowColor: Colors.red,
+              ),
+              ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+              ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
+              ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
+              ListTile( title: Text("Logout"), leading: Icon(Icons.logout),
+                onTap: () async {
+
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.QUESTION,
+                    animType: AnimType.BOTTOMSLIDE,
+                    title: 'Dialog Title',
+                    desc: 'Are you suer logout ?',
+                    btnCancelOnPress: () {
+                      },
+                    btnOkOnPress: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pushReplacementNamed("login");},
+                  )..show();
+
+              },),
+
+            ],
+          ),
+
+        ),
+
+99
+.................................................................................
+98
+98
+.................................................................................
+97
+97
+.................................................................................
+96
+96
+.................................................................................
+95
+95
+.................................................................................
+94
+94
+.................................................................................
+93
+93
+.................................................................................
+92
+طريقة اضافة pup package
+92
+.................................................................................
+91
+
+اضافة صورة
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class AddProduct extends StatefulWidget {
+  const AddProduct({Key key}) : super(key: key);
+
+  @override
+  _AddProductState createState() => _AddProductState();
+}
+
+class _AddProductState extends State<AddProduct> {
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+     textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Add product"),
+        ),
+        body: Container(
+          child: Column(
+            children: [
+              Form(child:Column(
+                children: [
+                  TextFormField(
+                    maxLength: 30,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: "أضف اسم المنتج",
+                      prefixIcon: Icon(Icons.add)
+                    ),
+                  ),
+
+                  TextFormField(
+                    maxLines: 3,
+                    minLines: 1,
+                    maxLength: 200,
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: "وصف المنتج",
+                        prefixIcon: Icon(Icons.add)
+                    ),
+                  ),
+                  ElevatedButton(
+
+                      onPressed: (){
+                 showBottomSheet();
+                      },
+
+                      child: Text("أضف صورة المنتج ",
+                        style: TextStyle(color: Colors.white),
+                      )),
+
+                  Container(height: 60,width: 220,
+                    child: ElevatedButton(
+                        onPressed: (){},
+                        child: Text("أضف المنتج ",
+                          style: Theme.of(context).textTheme.headline6 ,
+                        )),
+                  ),
+                ],
+              ))
+            ],
+          )
+        ),
+      ),
+    );
+  }
+
+  showBottomSheet(){
+    return showModalBottomSheet(context:context,
+    builder:(context){
+      return Container(
+        padding: EdgeInsets.all(10),
+        height: 200 ,
+        child: Column(
+          children: [
+            Text("رجاءاً أختر الصورة",
+            style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold
+            )),
+            InkWell(
+              onTap: (){},
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: [
+
+                    Icon(Icons.photo_outlined, size: 30,),
+                    SizedBox(width: 100,),
+                    Text("اختر من الأستوديو",
+                    style: TextStyle(fontSize: 20,)),
+                  ],
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: (){},
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: [
+
+                    Icon(Icons.camera, size: 30,),
+                    SizedBox(width: 100,),
+                    Text("اختر من الكاميرا",
+                        style: TextStyle(fontSize: 20,)),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+        });
+}
+}
+
+
+91
+.................................................................................
+90
+اذا بدي خلي التطبيق باللغة العربية بسيطة
+على الScaffold بضيفDirectionality
+
+مثال
+ Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('الصفحة الرئيسية'),
+          backgroundColor: Colors.green,
+        ),
+
+90
+.................................................................................
+89
+ صفحة اضافة منتج
+
+ import 'package:flutter/cupertino.dart';
+ import 'package:flutter/material.dart';
+
+ class AddProduct extends StatefulWidget {
+   const AddProduct({Key key}) : super(key: key);
+
+   @override
+   _AddProductState createState() => _AddProductState();
+ }
+
+ class _AddProductState extends State<AddProduct> {
+   @override
+   Widget build(BuildContext context) {
+     return Scaffold(
+       appBar: AppBar(
+         title: Text("Add product"),
+       ),
+       body: Container(
+         child: Column(
+           children: [
+             Form(child:Column(
+               children: [
+                 TextFormField(
+                   maxLength: 30,
+                   decoration: InputDecoration(
+                     filled: true,
+                     fillColor: Colors.white,
+                     labelText: "أضف اسم المنتج",
+                     prefixIcon: Icon(Icons.add)
+                   ),
+                 ),
+
+                 TextFormField(
+                   maxLines: 3,
+                   minLines: 1,
+                   maxLength: 200,
+                   decoration: InputDecoration(
+                       filled: true,
+                       fillColor: Colors.white,
+                       labelText: "وصف المنتج",
+                       prefixIcon: Icon(Icons.add)
+                   ),
+                 ),
+                 ElevatedButton(
+                     onPressed: (){},
+                     child: Text("أضف صورة المنتج ",
+                       style: TextStyle(color: Colors.white),
+                     )),
+
+                 Container(height: 60,width: 220,
+                   child: ElevatedButton(
+                       onPressed: (){},
+                       child: Text("أضف المنتج ",
+                         style: Theme.of(context).textTheme.headline6 ,
+                       )),
+                 ),
+               ],
+             ))
+           ],
+         )
+       ),
+     );
+   }
+ }
+
+
+
+89
+.................................................................................
+88
+
+
+صفحة الملاحظات طريقة 1 لتقيسمها افقي
+
+import 'package:flutter/material.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  List notes =[
+    {"note" : "المنتج الأول ",
+      "image" :"m1.jpeg" },
+    {"note" : "المنتج الثاني ",
+      "image" :"m1.jpeg"
+    },
+    {"note":" المنتج الثالث ",
+      "image" :"m1.jpeg"
+    },
+    {"note" : "المنتج الرابع ",
+      "image" :"m1.jpeg"
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    //double md = MediaQuery.of(context).size.width; //  يأخذ عرض الشاشة الموجودة عندي طريقة1
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('الصفحة الرئيسية'),
+        backgroundColor: Colors.green,
+      ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: notes.length,
+            itemBuilder: (context,i){
+            return ListNotes(
+          //    md : md , // طريقة 1
+              notes: notes[i],
+            );
+            }
+        ),
+
+      ),
+    );
+  }
+}
+
+
+class ListNotes extends StatelessWidget{
+  final notes ;
+ // final md ; // طريقة 1
+  ListNotes({this.notes,
+  //  this.md // طريقة 1
+  });
+  @override
+  Widget build(BuildContext context){
+        return Card(
+          child:Row(
+            children: [
+              Container(
+            //    width: md - 20 , // طريقة 1
+                child: ListTile(
+                  title: Text("${notes["note"]}"),
+                  trailing: IconButton(onPressed: (){},icon: Icon(Icons.edit),),
+                ),
+              ),
+
+            ],
+          )
+        );
+  }
+}
+
+................
+
+ طريقة 2 مع كامل الصفحة
+
+import 'package:flutter/material.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  List notes =[
+    {"note" : "المنتج الأول ",
+      "image" :"images/m1.jpeg" },
+    {"note" : "المنتج الثاني ",
+      "image" :"images/m2.jpg"
+    },
+    {"note":" المنتج الثالث ",
+      "image" :"images/m3.jpg"
+    },
+    {"note" : "المنتج الرابع ",
+      "image" :"images/m4.jpg"
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('الصفحة الرئيسية'),
+        backgroundColor: Colors.green,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add),
+        onPressed: (){},),
+      body: Container(
+        child: ListView.builder(
+          itemCount: notes.length,
+            itemBuilder: (context,i){
+            return Dismissible(key: Key("$i"),
+                child: ListNotes(notes: notes[i],)
+            );
+            }
+        ),
+
+      ),
+    );
+  }
+}
+
+
+class ListNotes extends StatelessWidget{
+  final notes ;
+  ListNotes({this.notes});
+  @override
+  Widget build(BuildContext context){
+        return Card(
+          child:Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Image.asset("${notes["image"]}" ,
+                  fit: BoxFit.fill,
+                  height: 130 ,
+                )
+              ),
+              Expanded(
+                flex: 2,
+                child: ListTile(
+                  title: Text("${notes["note"]}"),
+                  subtitle: Text("السعر "),
+                  trailing: IconButton(onPressed: (){},icon: Icon(Icons.edit),),
+                ),
+              ),
+
+            ],
+          )
+        );
+  }
+}
+
+
+
+88
+.................................................................................
+87
+انشاء صفحة انشاء الحساب الثانية
+
+import 'package:flutter/material.dart';
+
+class SignUp extends StatefulWidget {
+  const SignUp({Key key}) : super(key: key);
+
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(height: 225,width: 225,
+                child: Center(child:Image.asset("images/4.png"))),
+            Container(padding: EdgeInsets.all(10),
+              child: Form(child: Column(children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: "username",
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)
+                      )
+                  ),
+
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
+                      hintText: "email",
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)
+                      )
+                  ),
+                ),
+
+                SizedBox(height: 15),
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.star),
+                      hintText: "password",
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)
+                      )
+                  ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Text("if you hava ِِِAccount "),
+                      InkWell(onTap: (){
+                        Navigator.of(context).pushNamed("login");
+                      },
+                          child: Text("clack here",
+                            style: TextStyle(color: Colors.blue),
+                          ))
+                    ],
+                  ),
+                ),
+
+                Container(
+                  child: ElevatedButton(
+
+                    child: Text("انشاء حساب ",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    onPressed: (){},
+                  ),
+                )
+              ],),),
+            )
+          ],
+        )
+    );
+  }
+}
+
+
+
+
+87
+.................................................................................
+86
+
+
+       // هي ال theme ستاندر لكتير شغلات ممكن خطوط او ازرار الونها ..الخ
+
+        هي بتكون بالصفحة الرئيسة
+        theme: ThemeData(
+          primaryColor: Colors.red,
+            buttonColor: Colors.red,
+          textTheme: TextTheme(
+            headline6: TextStyle(
+              fontSize: 20,
+              color: Colors.black87
+            )
+          )
+        )
+
+طريقة الاستدعاء
+
+
+ Container(
+                child: ElevatedButton(
+
+                  child: Text("تسجيل الدخول",
+                  style: Theme.of(context).textTheme.headline6, // بخواصها اذا لم يوجد خواص يأخذ قيمها الافتراضية  headline6 هنا تم استدعاء ال
+                  ),
+                  onPressed: (){},
+                ),
+              )
+
+86
+.................................................................................
+85
+  بداية تطبيق اول صفحة
+
+  import 'package:flutter/material.dart';
+
+  class Login extends StatefulWidget {
+    const Login({Key key}) : super(key: key);
+
+    @override
+    _LoginState createState() => _LoginState();
+  }
+
+  class _LoginState extends State<Login> {
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(height: 225,width: 225,
+                child: Center(child:Image.asset("images/4.png"))),
+            Container(padding: EdgeInsets.all(10),
+              child: Form(child: Column(children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: "username",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1)
+                      )
+                  ),
+
+                ),
+                  SizedBox(height: 15),
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.star),
+                      hintText: "password",
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1)
+                      )
+                  ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Text("if you hava not account "),
+                     InkWell(onTap: (){}, child: Text("clack here",style: TextStyle(color: Colors.blue),))
+                    ],
+                  ),
+                ),
+
+                Container(
+                  child: ElevatedButton(
+                    child: Text("تسجيل الدخول"),
+                    onPressed: (){},
+                  ),
+                )
+              ],),),
+            )
+          ],
+        )
+      );
+    }
+  }
+
+
+
+
+
+85
+.................................................................................
+84
+
+شريط البحث 2
+
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(icon: Icon(Icons.search_rounded), onPressed: (){
+                showSearch(context: context, delegate: searchdata());
+            })
+          ],
+          title: Text("Page Test"),
+        ),
+        body: Center(
+          child: Text("البحث"),
+        )
+    );
+  }
+}
+
+class searchdata extends SearchDelegate {
+
+    List names = [
+      "mahmoud",
+      "محمود",
+      "ahmad",
+      "basel",
+      "wail",
+
+    ];
+  List<Widget> buildActions(BuildContext context) {
+ return [
+   IconButton(icon: Icon(Icons.close), onPressed: (){
+     query = "";
+   })
+ ];
+
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+      close(context, null); // بتخرج من البحث
+    });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Text("${query}") ;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+
+    List   filternames = names.where((element) => element.contains(query) ).toList(); // startsWith من أجل البحث بأول حرف من الكلمة
+
+      return ListView.builder(
+          itemCount: query == "" ? names.length: filternames.length,
+          itemBuilder: (context , i ) {
+
+            return InkWell(
+              onTap: (){
+                query = query == "" ? names[i]:filternames[i] ; // من اجل ارجاع القيمة التي سنكبس عليها
+                showResults(context);
+              },
+              child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: query==""?
+                  Text("${names[i]}",style: TextStyle(fontSize: 40),)
+                  : Text("${filternames[i]}",style: TextStyle(fontSize: 40),)
+              ),
+            );
+          });
+  }
+}
+
+84
+.................................................................................
+83
+ شريط البحث 1
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(icon: Icon(Icons.search_rounded), onPressed: (){
+                showSearch(context: context, delegate: searchdata());
+            })
+          ],
+          title: Text("Page Test"),
+        ),
+        body: Center(
+          child: Text("البحث"),
+        )
+    );
+  }
+}
+
+class searchdata extends SearchDelegate {
+
+  List<Widget> buildActions(BuildContext context) {
+ return [
+   IconButton(icon: Icon(Icons.close), onPressed: (){})
+ ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){
+
+    });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return null ;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+      return Center(child: Text("محتوى البحث"));
+  }
+}
+
+
+
+83
+.................................................................................
+82
+showModalBottomSheet الشاشة التي تظهر من الأسفل
+
+class Test extends StatefulWidget {
+  State<StatefulWidget> createState() {
+    return TestState();
+  }
+}
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Page Test"),),
+        body: Center(
+          child: ElevatedButton(
+            child: Text("أضغط لإظهار الشاشة السفلى"),
+            onPressed:(){
+             showModalBottomSheet(context: context,
+                 builder: (context) => Container(
+                   child: Center(
+                       child: Text("الشاشة المُظهرة",
+                         style: TextStyle(fontSize: 50),
+                       )
+                   ),
+                   height: 200,color: Colors.green,
+                 )
+              );
+            } ,
+          ),
+        )
+    );
+  }
+}
+
+
+
+82
+.................................................................................
+81
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+    ScrollController  sc ;
+
+    Void initState (){
+      sc = new ScrollController();
+      sc.addListener(() {
+        print(sc.offset);
+        print("Max pixel = ${sc.position.maxScrollExtent}");
+        print("Min pixel = ${sc.position.minScrollExtent}");
+      });
+     super.initState();
+    }
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Page Test"),),
+        body: ListView(
+          controller: sc ,
+          children: [
+            ElevatedButton(onPressed: (){
+              sc.jumpTo(sc.position.maxScrollExtent);
+            }, child: Text("Jump to bottom")),
+            ...List.generate(20, (index) => Container(
+              margin: EdgeInsets.all(10),
+              child: Text("Container $index"),
+              height: 100,
+              color: index.isEven ? Colors.red : Colors.green,
+              width: double.infinity,
+
+            )),
+            ElevatedButton(onPressed: (){
+              sc.animateTo(100, duration: Duration(seconds: 2), curve:Curves.easeIn); // استخدمنا ال animate مشان الانتقال الناعم
+            }, child: Text("Jump to Top")),
+          ],
+        )
+    );
+  }
+}
+
+81
+.................................................................................
+80
+ درس ال Slider الشريط متغير القيمة
+
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  var valueslider =0.0 ; //  لأنه لازم تكون double
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Page Test"),),
+        body: Column(
+         children: [
+          Slider(
+              min: 0, // ادنى قيمة
+              max: 100,// اعلى قيمة
+              activeColor: Colors.green, // لون الشريط الفعال
+              inactiveColor: Colors.red, // لون الشريط الغيرالفعال
+              value: valueslider, // متغير من أجل تحديد موقع دائرة ال slider
+              onChanged: (val){
+                setState(() {
+                  valueslider =val ;
+                  print(valueslider);
+                });
+          })
+         ],
+        )
+    );
+  }
+}
+
+
+
+
+80
+.................................................................................
+79
+
+Navigator 3
+بهاد الدرس فكرة
+Navigator.of(context).pushReplacementNamed("one");
+هي يعني pushReplacementNamed الانتقال لصفحة ما بس بدون الرجوع اليها يعني بنحذف الروت
+هي الخاصية حلوة اذا كانت بعد صفحة تسجيل دخول بحيث اذا سجل دخول مابقدر يرجع الا بتسجيل خروج
+من الممكن الرجوع للصفحة بس مو عن طريق ال pop بس عن طريق push يعني انتقال عادي وليس رجوع
+
+
+79
+.................................................................................
+78
+بالدرس هاد هو طريقة الرجوع للصفحة رح من خلال تعليمة
+Navigator.of(context).pop();
+وفي عنا تعليمة بترجع true اذا بقدر ارجع وصفحة وبترجع false اذا مابقدر وهي
+Navigator.of(context).canPop()
+ومابقدر ارجع لما كون بالصفحة البدائية الرئيسية يعني الي مادخلت لسا على ولا صفحة
+
+رح اكتفي بعرض صفحة one page
+
+
+class One extends StatefulWidget {
+  const One({key}) : super(key: key);
+  @override
+  _oneState createState() => _oneState();
+}
+
+class _oneState extends State<One> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("one page"),),
+      body: Column(
+        children: [
+          ElevatedButton(onPressed: (){
+            if(Navigator.of(context).canPop()){
+            Navigator.of(context).pop();}
+          },
+              child: Text("Back"))
+        ],
+      ),
+
+    );
+  }
+}
+
+
+
+78
+.................................................................................
+77
+طرق الانتثقال من صفحة الى صفحة من خلال  Navigator
+
+
+1- الطريقة الاولى هو ان نضع التعليمات في داخل صصفحة ال test وليس في ال main فنضع في الزر وتحديداً هكذا
+ElevatedButton(
+                 onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder:(context){
+                    return One() ;
+                  }));
+                 },
+.....
+2- أما الطريقة الثانية أن يكون في ال main مايسمى بال routs
+في صفحة ال main
+
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false ,
+      home: Test(),
+      routes: {
+        "one": (context) => One(),
+        "tow": (context) => Tow(),
+      },
+      );
+  }
+}
+
+في صفحة ال test
+
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("Page Test"),),
+        body: Column(
+         children: [
+           Container(
+             child: Center(
+               child: Column(
+                 children: [
+                   ElevatedButton(
+                     onPressed: (){
+                          Navigator.of(context).pushNamed("one");
+                     },
+                     child: Text("Go to one page"),
+                   ),
+                   ElevatedButton(
+                     onPressed: (){
+                       Navigator.of(context).pushNamed("tow");
+                     },
+                     child: Text("Go to tow page"),
+                   ),
+
+                 ],
+               ),
+             ),
+           )
+         ],
+        )
+    );
+  }
+
+}
+
+
+ أما في الصفحات one و tow فيحتويان على ماتريد
+
+
+
+77
+.................................................................................
+76
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  var username;
+  var phone ;
+
+GlobalKey<FormState> formState = new GlobalKey<FormState>();
+
+// send داخل ال om pressed
+send (){
+  var form = formState.currentState ;
+  if(form.validate()){
+    form.save(); //عشان تخزن(تحفظ) القيم الي منكتبها بالحقل بالمتغيرات
+    print("username = $username");
+    print("phone = $phone");
+  }else{print("خطأ");}
+}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: Form( // لابد من ال Form and Key من اجل التحكم بالحقل او اي ويدجت
+             autovalidateMode:AutovalidateMode.always, //هي لجعل الرسالة تنبثق من دون الضغط على الزر ومن الممكن ان نضعها ضمن ل حقل على حدا
+             key: formState,
+             child: Column(
+               children: [
+                 TextFormField(
+                   onSaved: (text){
+                     username = text;
+                   },
+        // validator يعني تحقق;
+                   validator:(text) {
+                     if (text.length<4){
+                       return("لايمكن للحرف أن يكون أصغر من 4");
+                     }
+                     if (text.length>10){
+                      return ("لايمكن للحرف أن يكون أكبر من 10");
+                     }
+                  return null ;
+                   },
+                 ),
+
+                 TextFormField(
+                   onSaved: (text){
+                     phone = text;
+                   },
+                   // validator يعني تحقق;
+                   validator:(text) {
+                     if (text.length<4){
+                       return("لايمكن عدد الارقام اقل من 4");
+                     }
+                     if (text.length>10){
+                       return ("لايمكن عدد الارقام أكبر من 10");
+                     }
+                     return null ;
+                   },
+                 ),
+
+               ],
+             ),
+           )    ),
+          ElevatedButton(onPressed: send , child: Text("Send"))
+
+       ],
+      )
+    );
+  }
+}
+
+
+76
+.................................................................................
+75
+TextFormField part 6
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+GlobalKey<FormState> formState = new GlobalKey<FormState>();
+
+// send داخل ال om pressed
+send (){
+  var form = formState.currentState ;
+  if(form.validate()){
+    print("صح");
+  }else{print("خطأ");}
+}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: Form( // لابد من ال Form and Key من اجل التحكم بالحقل او اي ويدجت
+             autovalidateMode:AutovalidateMode.always, //هي لجعل الرسالة تنبثق من دون الضغط على الزر ومن الممكن ان نضعها ضمن ل حقل على حدا
+             key: formState,
+             child: TextFormField(
+        // validator يعني تحقق;
+               validator:(text) {
+                 if (text.length<4){
+                   return("لايمكن للحرف أن يكون أصغر من 4");
+                 }
+                 if (text.length>10){
+                  return ("لايمكن للحرف أن يكون أكبر من 10");
+                 }
+              return null ;
+               },
+             ),
+           )    ),
+          ElevatedButton(onPressed: send , child: Text("Send"))
+
+       ],
+      )
+    );
+  }
+}
+
+75
+.......................................................................
+74
+TextFormField part 5
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+var value ;
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: TextFormField(
+             // onTap: (){print("عند الضغط على الحقل");},
+             // هذا التابع onChanged عند اضافة اي حرف او رقم للحفل يتفعل
+              onChanged:(text){
+                setState(() {
+                  value = text ;
+                });
+              } ,
+             // onEditingComplete تستخدم عند الانتهاء من الكتابة والضغط انتر
+             onEditingComplete: (){
+                print("complete");
+             },
+           )    ),
+          Text("value : $value")
+
+       ],
+      )
+    );
+  }
+}
+
+
+74
+................................................................................................
+73
+TextFormField part 4
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+  TextEditingController user = new TextEditingController();
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: TextFormField(
+             // readOnly: true, // تفيد في جعل المربع فقط للقراءة
+             // initialValue: "read only ^_^ ",
+             // style: TextStyle(color: Colors.red), // To control in the text in field
+             // textInputAction: TextInputAction.newline, // To control in button the input text زر الإدخال
+            controller: user,
+           ),
+         ),
+         ElevatedButton(
+           child: Text("أضغط"),
+           onPressed: (){
+             print(user.text);
+           },
+         )
+       ],
+      )
+    );
+  }
+}
+
+
+73
+....................................................................................
+72
+TextFormField part 3
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: TextFormField(
+             cursorColor: Colors.red,
+             cursorWidth:4 ,
+             cursorHeight: 30,
+              maxLength:40 , // العدد الأقصى للأحرف المسموح بكتابتها
+               // minLines: 1, // هيك الأفضل استخدام الماكس ول مين سوا
+              // maxLines: 2, // عدد الأسطر
+                obscureText: true , // هي تستخدم لكلمات المرور متل التشفير
+               keyboardType: TextInputType.number, // نوع الكيبورد ممكن نخليه ارقام أو للإيميل أو لكتابة تاريخ او أي شيء
+             // initialValue: "100", //قيمة ابتدائية
+             decoration: InputDecoration(
+               icon: Icon(Icons.ac_unit), // TextFormField في خارح
+               prefixIcon: Icon(Icons.ac_unit), // بداية TextFormField
+               suffixIcon: Icon(Icons.ac_unit), // في آخر TextFormField
+
+
+             )
+           ),
+         )
+       ],
+      )
+    );
+  }
+}
+
+
+72
+...............................................................................................
+71
+TextFormField part 2
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         Container(
+           padding: EdgeInsets.all( 10),
+           child: TextFormField(
+             decoration: InputDecoration(
+                enabled: true , //  enabledBorder هذه الحال تكون متوقفة يعني لما تكون false بتتفعل خواص disabledBorder ولما تكون true بتتفعل خواص
+               //  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.green,width:4 ),) // الخ كلها أشكال الخط.. out و under ال
+              disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black87,width:4 ),borderRadius: BorderRadius.circular(20)),
+               enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.green,width:4 ),borderRadius: BorderRadius.circular(20)),
+               focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.deepPurple,width:4 ),borderRadius: BorderRadius.circular(20)),
+                // فكرة border انها عند استخدامها أي شيء نغيره بها ينطبق ع كل الحالات
+                // border: OutlineInputBorder(borderSide: BorderSide(color: Colors.amber))
+             )
+           ),
+         )
+       ],
+      )
+    );
+  }
+}
+
+
+
+
+71
+.....................................................................................
+70
+ /حقول الإدخال/
+       TextFormField
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+       children: [
+         //حقول الإدخال
+         TextFormField(
+           decoration: InputDecoration(
+             // hintText: "أدخل الاسم",
+             //   hintStyle: TextStyle(fontSize: 30),
+             //   hintMaxLines: 3, //   أكبرعددأسطر
+             //  prefixIcon: Icon(Icons.ac_unit),
+             //   prefix: Text('أدخل الاسم'), // هذا لايمحى نص ثابت
+             //    suffix: Text('الاسم'), // نفس البرفكس ولكن عكس اتجاه
+             //    suffixIcon: Icon(Icons.ac_unit),
+             labelText: 'ادخل البريد الالكتروني', // حلاوته برتفع لما تكبس عليه
+             labelStyle: TextStyle(fontSize: 20,color: Colors.deepPurple),
+              filled: true , // يعني الحقل مملوء
+              fillColor: Colors.blue // لون
+           ))
+       ],
+      )
+    );
+  }
+}
+
+
+70
+
+....................................................................................
+69
+
+PageView.builder = PageView + loop
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  PageController pc ;
+  void initState(){
+    pc = new PageController(
+      initialPage:4,// رقم صفحة البدأ
+      viewportFraction: 0.8 , // مقدار مساحة اظهور
+    );
+    super.initState();
+  }
+
+  List image = [
+    {"ur1":"images/2.jpg"},
+    {"ur1":"images/3.jpg"},
+    {"ur1":"images/4.jpg"},
+    {"ur1":"images/5.jpg"},
+    {"ur1":"images/6.jpg"},
+    {"ur1":"images/7.jpg"},
+    {"ur1":"images/8.jpg"},
+    {"ur1":"images/9.jpg"},
+    {"ur1":"images/10.jpg"},
+    {"ur1":"images/11.jpg"},
+  ];
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar( ),
+      body:Column(
+        children: [
+          Container(padding: EdgeInsets.symmetric(vertical: 10),
+            height: 450,
+            child:PageView.builder(
+              controller: pc,
+              // scrollDirection: Axis.vertical,// جعل الاتجاه عامودي
+              // reverse: true, //تغير الاتجاه بالعكس
+              onPageChanged: (index){print(index);},
+              itemCount: image.length,
+              itemBuilder: (context, i) {
+                return Image.asset(image[i]["ur1"],fit: BoxFit.fill,);
+              },
+            ),
+          ),
+
+          ElevatedButton(onPressed: (){
+            // pc.jumpToPage(2); // انتقال سريع
+            pc.animateToPage(4, // هنا انتقال ولكن مع حركة هذا رقم الصفحة
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeIn // سنأتي عليها
+            );
+          }, child: Text("Go to HomePage"))
+        ],
+      ) ,
+    );
+  }
+}
+
+
+
+69
+.........................................................................
+
+68
+PageView
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  PageController pc ;
+  void initState(){
+    pc = new PageController(
+      initialPage:4,// رقم صفحة البدأ
+      viewportFraction: 0.8 , // مقدار مساحة اظهور
+    );
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar( ),
+      body:Column(
+        children: [
+          Container(padding: EdgeInsets.symmetric(vertical: 10),
+            height: 450,
+            child:PageView(
+              controller: pc,
+              // scrollDirection: Axis.vertical,// جعل الاتجاه عامودي
+              // reverse: true, //تغير الاتجاه بالعكس
+              onPageChanged: (index){print(index);},
+              children: [
+              Image.asset("images/2.jpg",fit: BoxFit.fill,),
+              Image.asset("images/3.jpg",fit: BoxFit.fill,),
+              Image.asset("images/4.jpg",fit: BoxFit.fill,),
+              Image.asset("images/5.jpg",fit: BoxFit.fill,),
+              Image.asset("images/6.jpg",fit: BoxFit.fill,),
+              Image.asset("images/7.jpg",fit: BoxFit.fill,),
+              Image.asset("images/8.jpg",fit: BoxFit.fill,),
+              Image.asset("images/9.jpg",fit: BoxFit.fill,),
+              Image.asset("images/10.jpg",fit: BoxFit.fill,),
+              Image.asset("images/11.jpg",fit: BoxFit.fill,),
+            ],),
+          ),
+        ],
+      ) ,
+    );
+  }
+}
+
+
+
+68
+...........................................................................
+67
+
+ bottomNavigationBar
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+
+  int selectedIndex = 0;
+  List<Widget> listWidegt =[
+    Text("صفحة 1"),
+    Container(
+          width: double.infinity,
+          child: Text("Mahmoud",style: TextStyle(fontSize: 40),),
+          color: Colors.deepPurple,
+        ),
+    page()
+  ];
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar( ),
+        bottomNavigationBar: BottomNavigationBar(
+          iconSize: 30,
+          selectedItemColor: Colors.white, // التحكم بلون الخيار الفعال
+          selectedLabelStyle: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold), // التحكم بخط الخيار الفعال
+          unselectedItemColor: Colors.black, // التحكم بلون الخيار غير الفعال
+          currentIndex: selectedIndex, // هذه تحدد الخيار المفعل
+          // selectedFontSize: 40, ممكن اتحكم مباشرة بالخط
+          onTap: (index) {
+            setState(() {
+              selectedIndex =
+                  index; //أصبح يعفل المسند selectedIndex الى  index عندما أسندنا ال
+            });
+          },
+          backgroundColor: Colors.amber,
+
+          items: [
+            BottomNavigationBarItem(
+                label: "الصفحة الرئيسة",
+                icon: Icon(Icons.access_time_outlined)),
+            BottomNavigationBarItem(
+              label: "روابط هامة ",
+              icon: Icon(Icons.account_box),
+            ),
+            BottomNavigationBarItem(
+              label: "page",
+              icon: Icon(Icons.pages),
+            ),
+          ],
+        ),
+        drawer: Drawer(),
+        body: listWidegt.elementAt(selectedIndex)
+
+    );
+  }
+}
+
+
+
+67
+
+............................................................................................
+66
+            controller بالدرس الماضي كان التحكم DefaultTabController يعني تحكم تلقائي أما هنا فالتحكم يدوي نحن نتحكم من خلال إنشاء
+
+class TestState extends State<Test> with SingleTickerProviderStateMixin {
+
+  TabController mycontroller ;
+  // أول ما افتح الصفحة سوف تظهر initState
+  void initState(){
+    mycontroller = new TabController(
+        length: 6,
+        vsync: this,
+        initialIndex: 5 // الصفحة الرئيسية التي يبدأ عندها البرنامج
+    );
+    super.initState();
+  }
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+
+            title: Text("الصفحة الرئيسية للشيخ"),
+            bottom: TabBar(
+              controller: mycontroller, // تعريف المتحكم
+              isScrollable: true,  // هذه من اجل امكانية سحب الويدجات ان كانو كثار
+              physics: BouncingScrollPhysics(),
+              indicatorColor: Colors.black, // الخط الموجود تحت الخيار ممكن التحكم بكل شيء يخصه
+              onTap: (index){print(index);}, // عنوان للخيارات
+              tabs: [
+                Tab(child: Text("الدروس العلمية"),
+                icon: Icon(Icons.do_disturb_off_sharp),),
+                Tab(child: Text("خطب يوم الجمعة"),
+                  icon: Icon(Icons.accessibility_new_sharp),),
+                Tab(child: Text("الرحلات"),
+                  icon: Icon(Icons.zoom_out_outlined,)),
+                Tab(child: Text("الكتب"),
+                  icon: Icon(Icons.ac_unit),),
+                Tab(child: Text("الصفحات الرسمية"),
+                  icon: Icon(Icons.print),),
+              Tab(child: Text("المناظرات"),
+                icon: Icon(Icons.home),),
+            ],
+            ),
+        ),
+        drawer: Drawer(),
+        body: TabBarView(  // TabBarView هذه  ويجدت السحب
+              controller: mycontroller,
+          children: [
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+          ],
+        )
+    );
+  }
+}
+
+
+66
+...........................................................................................................
+65
+    هذه TabBar من اجل صناعة خيارات على AppBar بناءً على الدرس السابق
+
+class TestState extends State<Test> {
+  Widget build(BuildContext context) {
+    return DefaultTabController(   //  من اجل أن نستطيع سحب الشاشة بويدجت كامل واضافة ويدجات عدة  DefaultTabController
+        length: 6 ,  // عدد الويدجت الرئيسي الأب يعني عدد الصفحات المسموح اضافتها
+        child: Scaffold(
+        appBar: AppBar(
+
+            title: Text("الصفحة الرئيسية للشيخ"),
+            bottom: TabBar(
+              isScrollable: true,  // هذه من اجل امكانية سحب الويدجات ان كانو كثار
+              physics: BouncingScrollPhysics(),
+              indicatorColor: Colors.black, // الخط الموجود تحت الخيار ممكن التحكم بكل شيء يخصه
+              onTap: (index){print(index);}, // عنوان للخيارات
+              tabs: [
+                Tab(child: Text("الدروس العلمية"),
+                icon: Icon(Icons.do_disturb_off_sharp),),
+                Tab(child: Text("خطب يوم الجمعة"),
+                  icon: Icon(Icons.accessibility_new_sharp),),
+                Tab(child: Text("الرحلات"),
+                  icon: Icon(Icons.zoom_out_outlined,)),
+                Tab(child: Text("الكتب"),
+                  icon: Icon(Icons.ac_unit),),
+                Tab(child: Text("الصفحات الرسمية"),
+                  icon: Icon(Icons.print),),
+              Tab(child: Text("المناظرات"),
+                icon: Icon(Icons.home),),
+            ],
+            ),
+        ),
+        drawer: Drawer(),
+        body: TabBarView(  // TabBarView هذه  ويجدت السحب
+
+          children: [
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+          ],
+        )
+    )
+    );
+  }
+}
+
+
+
+65
+
+
+................................................................................................
+64
+                TabBarView  هذه  ويجدت السحب الشاشة
+
+
+class TestState extends State<Test> {
+  Widget build(BuildContext context) {
+    return DefaultTabController(   //  من اجل أن نستطيع سحب الشاشة بويدجت كامل واضافة ويدجات عدة  DefaultTabController
+        length: 2 ,  // عدد الويدجت الرئيسي الأب يعني عدد الصفحات المسموح اضافتها
+        child: Scaffold(
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: TabBarView(  // TabBarView  هذه  ويجدت السحب الشاشة
+
+          children: [
+            Container(width: double.infinity, child: Text("Mahmoud"),color: Colors.deepPurple,),
+            Container(width: double.infinity, child: Text("AL-ALi"),color: Colors.green,),
+          ],
+        )
+    )
+    );
+  }
+}
+
+
+64
+
+........................................................................................................
+63
+Drawer 2
+
+class TestState extends State<Test>{
+
+  GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>();
+
+  Widget build(BuildContext context){
+
+    return Scaffold(
+        key: scaffoldkey,
+        appBar: AppBar(
+          title: Text("الصفحة الرئيسية",textAlign: TextAlign.center,textDirection: TextDirection.rtl,),
+
+          leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){},),  //  Drawer انتبه اذا استخدمت هذه ستحذف ايقونة ال
+          actions: [
+            IconButton(icon: Icon(Icons.title), onPressed: (){}),
+            IconButton(icon: Icon(Icons.add), onPressed: (){}),
+
+          ],
+          brightness: Brightness.dark, // لون عناصر الموجودين فوق ال AppBar
+          shadowColor: Colors.green,
+          centerTitle: true,
+          elevation: 20, backgroundColor: Colors.deepPurple,
+        ),
+        drawerScrimColor: Colors.deepPurple.withOpacity(0.5), // هي الشاشة اسمها ويزأوبستي
+        endDrawer: Drawer(
+
+        ), // اذا  بدي خليها من اليمين
+        drawer: Drawer(
+          child: Column(
+            children: [
+              UserAccountsDrawerHeader( // هذه الخاصية جاهزة للإيميل
+                currentAccountPicture: CircleAvatar(backgroundColor: Colors.deepPurple,child: Text("M"),),
+                accountName: Text("Mahmoud AL-ALi"),
+                accountEmail: Text("mahmoudad2013@hotmail.com"),
+                arrowColor: Colors.red,
+              ),
+              ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+              ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
+              ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
+              ListTile( title: Text("Logout"), leading: Icon(Icons.logout),onTap: (){},),
+
+            ],
+          ),
+        ),
+
+        body:  Center(
+          child: Container(
+              padding: EdgeInsets.only(top: 200),
+              child: Column(
+                children: [
+                  IconButton(icon: Icon(Icons.arrow_back,size: 30,),
+                    onPressed: (){
+                      scaffoldkey.currentState.openDrawer();
+                    },
+                    color: Colors.deepPurple,
+
+                  ),
+                  IconButton(icon: Icon(Icons.arrow_forward_outlined,size: 30,),
+                    onPressed: (){
+                      scaffoldkey.currentState.openEndDrawer();
+                    },
+                    color: Colors.deepPurple,
+
+                  ),
+                ],
+              )
+          ),
+        )
+    );
+  }
+}
+
+
+
+
+63
+......................................................................................
+62
+AppBar
+
+
+      return Scaffold(
+
+          appBar: AppBar(
+            title: Text("الصفحة الرئيسية",textAlign: TextAlign.center,textDirection: TextDirection.rtl,),
+
+            leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){},),  //  Drawer انتبه اذا استخدمت هذه ستحذف ايقونة ال
+            actions: [
+              IconButton(icon: Icon(Icons.title), onPressed: (){}),
+              IconButton(icon: Icon(Icons.add), onPressed: (){}),
+
+            ],
+          brightness: Brightness.dark, // لون عناصر الموجودين فوق ال AppBar
+          shadowColor: Colors.green,
+          centerTitle: true,
+          elevation: 20, backgroundColor: Colors.deepPurple,
+          ),
+          // endDrawer: Drawer(), // اذا  بدي خليها من اليمين
+         // Drawer: Drawer(),
+           body:  Container(
+            child: Text("Ahmad"),
+            color: Colors.amber,margin: EdgeInsets.all(10),
+          )
+         );
+  }
+}
+62
+...................................................................................
+61
+
+Drawer
+
+          appBar: AppBar(
+            // leading: ElevatedButton(child: Icon(Icons.arrow_back),onPressed: (){},),  //  Drawer انتبه اذا استخدمت هذه ستحذف ايقونة ال
+          ),
+          drawer: Drawer(
+            child: Column(
+              children: [
+                UserAccountsDrawerHeader( // هذه الخاصية جاهزة للإيميل
+                   currentAccountPicture: CircleAvatar(backgroundColor: Colors.deepPurple,child: Text("M"),),
+                    accountName: Text("Mahmoud AL-ALi"),
+                    accountEmail: Text("mahmoudad2013@hotmail.com"),
+                  arrowColor: Colors.red,
+                ),
+                 ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+                ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
+                ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
+                ListTile( title: Text("Logout"), leading: Icon(Icons.logout),onTap: (){},),
+
+                ],
+            ),
+          ),
+          // endDrawer: Drawer(), // اذا  بدي خليها من اليمين
+           body:  Container(
+            child: Text("Ahmad"),
+            color: Colors.amber,margin: EdgeInsets.all(10),
+          )
+         );
+  }
+}
+
+
+
+
+61
+......................................................................................
+60
+
+  List user = ["mohammad",'mahmoud',10,16,12,12,33,4,4,5,];
+
+  Widget build(BuildContext context){
+
+      return Scaffold(
+
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: Container(
+          padding: EdgeInsets.all(10),
+          child: GridView.count(  // هي مابتفرق عن اخواتها بس مابتحتاج ل gridDelegate
+            crossAxisCount: 2,
+            children: [
+
+              Container(child: Text("${user[1]}"),color: Colors.amber,margin: EdgeInsets.all(10),),
+              Container(child: Text("${user[2]}"),color: Colors.green,),
+              Container(child: Text("${user[3]}"),color: Colors.red,),
+              Container(child: Text("${user[4]}"),color: Colors.blue,),
+              Container(child: Text("${user[5]}"),color: Colors.deepPurple),
+            ],
+          ),
+        )
+
+60
+.........................................................................................
+59
+  الفرق بين ال ListView  و ListViewBuilder هو أن ListViewBuilder تقبل Loop والثاني لا وكذلك GridView.builder و GridView
+
+ List user = ["mohammad",'mahmoud',10,16,12,12,33,4,4,5,];
+
+  Widget build(BuildContext context){
+
+      return Scaffold(
+
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: GridView(
+          physics: BouncingScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisSpacing: 15,crossAxisCount: 2,mainAxisSpacing: 10
+          ),
+         // هذه تمثل ال Loop هنا
+          children: List.generate(user.length, (i){
+          return Container(
+            color: Colors.amber,
+            child: Text("${user[i]}"),
+          );} )
+        )
+      );
+  }
+}
+
+
+
+59
+
+
+...............................................................................
+58
+
+
+
+class TestState extends State<Test>{
+  List student = [
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+
+  ];
+
+  Widget build(BuildContext context){
+
+      return Scaffold(
+
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: GridView.builder(    // نفس تماما ListView ولكن الفرق اني استطيع جعل السطر فيه أكثر من عنصر يعني بدل ال Row مثلا
+            itemCount: student.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
+              crossAxisCount: 2, // عدد العناصر في السطر أو العمود حسب نوع ال GridView
+             // من اجل التباعد بين العناصر وممكن ايضا استخدم كونتينار وبادينغ
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 5 ,
+            //
+
+            ),
+
+            itemBuilder: (context,i){
+              return Container(
+                // margin: EdgeInsets.all(10),
+                color: Colors.green,
+                child: ListTile(
+
+                  title:Text("${student[i]["الاسم"]}",style: TextStyle(fontSize: 30),),
+                  trailing:Text("${student[i]["الحفظ"]}"),
+                  subtitle:Text("${student[i]["الصف"]}"),
+                ),
+              );
+
+            }
+
+        )
+      );
+  }
+
+  58
+....................................................................................
+57
+
+
+ List student = [
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+
+  ];
+
+  Widget build(BuildContext context){
+
+      return Scaffold(
+
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: ListView.separated(  //  نفس تمام builder ولكن فيها خاصية جديدة لتوليد فواصل بين عناصر اللائحة
+            separatorBuilder: // هي الإضافة عن builder وهي هامة للفصل بين العناصر
+                (context,index){
+              return Divider // هي ممكن نغيرها كيف مابدنا لأن ويدجت فممكن حط زر او  cuolmun او row او اي شي
+                (color: Colors.black,height: 2,thickness: 2 ,);
+            },
+            physics: BouncingScrollPhysics(),
+            // padding: EdgeInsets.all(10),
+            itemCount: student.length , // عدد التكرار المطلوب
+            itemBuilder: (context , i){ // متغيرين التكرار
+          return Container(
+            // margin: EdgeInsets.all(10),
+            color: Colors.green,
+            child: ListTile(
+           // اضافة وتجربة
+              onTap: (){
+                setState(() {
+
+              showDialog(context: context, builder: (context){
+              return AlertDialog(
+              title: Text("النقاط : 10",textDirection: TextDirection.rtl,textAlign: TextAlign.right,),
+              // title: Icon(Icons.arrow_downward_rounded,color: Colors.white,),
+              content: ElevatedButton(
+                onPressed: () { print(i); },
+                child: Text("إضافة نقاط"),
+
+              ),
+              backgroundColor: Colors.black,
+              titleTextStyle: TextStyle(color: Colors.white,fontSize: 30), // اذا كان في خط بتتحكم فيه ممكن من هون هي للعنوان
+              contentTextStyle: TextStyle(color: Colors.white,fontSize: 20), // ايضا تحكم بخواص محتوى النص
+              titlePadding: EdgeInsets.all(20), // حواف العنوان
+              contentPadding: EdgeInsets.all(20), // حواف النص الداخلي
+              // الحداث التي تنعرض بداخل الزر
+              actions: [
+
+              FlatButton(onPressed: (){print("حسنا");}, child: Text("حسناً")),
+              FlatButton(onPressed: (){
+              Navigator.of(context).pop(); // مو مهم حاليا نفهمه ولكن هاد بلغي ال Alin عند الضغط
+              print("إغلاق");}, child: Text("إغلاق"))
+              ],
+
+              );
+
+              });
+
+                });
+                },
+
+              // انتهى اضافة
+              title:Text("${student[i]["الاسم"]}",style: TextStyle(fontSize: 30),),
+              trailing:Text("${student[i]["الحفظ"]}"),
+              subtitle:Text("${student[i]["الصف"]}"),
+            ),
+          );
+        })
+
+
+
+57
+....................................................................................
+  56     ListView.builder(  //  هذه ويدجت من اجل التكرار متل ال For وهامة جدا جدا
+
+
+class TestState extends State<Test>{
+  List student = [
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+    {"الاسم":"محمد","الحفظ":"أتم الجزء العاشر","الصف":"الصف : رابع"},
+    {"الاسم":"سليم","الحفظ":"أتم الجزء الثاني","الصف":"الصف : السادس"},
+    {"الاسم":"طاهر","الحفظ":"أتم الجزء الخامس","الصف":"الصف : خامس"},
+    {"الاسم":"مجد","الحفظ":"أتم الجزء السابع","الصف":"الصف : عاشر"},
+    {"الاسم":"أغيد","الحفظ":"أتم الجزء الثاني","الصف":"الصف : ثاني"},
+
+  ];
+
+  Widget build(BuildContext context){
+
+      return Scaffold(
+
+        appBar: AppBar(),
+        drawer: Drawer(),
+        body: ListView.builder(  //  هذه ويدجت من اجل التكرار متل ال For وهامة جدا جدا
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.all(10),
+
+            itemCount: student.length , // عدد التكرار المطلوب
+            itemBuilder: (context , i){
+          return Container(margin: EdgeInsets.all(10),color: Colors.green,
+            child: ListTile(
+              onTap: (){print(i);},
+              title:Text("${student[i]["الاسم"]}",style: TextStyle(fontSize: 30),),
+              trailing:Text("${student[i]["الحفظ"]}"),
+              subtitle:Text("${student[i]["الصف"]}"),
+            ),
+          );
+        })
+
+      );
+  }
+}
+
+
+
+
+56
+................................................................
+55           تصميم ممتع
+
+Container(
+          padding: EdgeInsets.all(10),
+          color: Colors.black,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            physics: BouncingScrollPhysics(),
+            children: [
+              Text("الجزء الأول ",style: TextStyle(color: Colors.white,fontSize: 25,),textAlign: TextAlign.center,),
+              Container(
+
+                height: 100,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  // shrinkWrap: true, // بتخلي الشاشة ع نسق واحد وبتغني عن كونتينار
+                  children: [
+                    Container(child: Text("صفحة 1"),width: 300,height: 50,color: Colors.indigoAccent,),
+                    Container(child: Text("صفحة 2"),width: 300,height: 50,color: Colors.amberAccent,),
+                    Container(child: Text("صفحة 3"),height: 50,width: 300,color: Colors.white,),
+                    Container(child: Text("صفحة 4"),height: 50,width: 300,color: Colors.green,),
+                    Container(child: Text("صفحة 5"),height: 50,width: 300,color: Colors.deepOrange,),
+                    Container(child: Text("صفحة 6"),height: 50,width: 300,color: Colors.teal,),
+                    Container(child: Text("صفحة 7"),height: 50,width: 300,color: Colors.amber,),
+                    Container(child: Text("صفحة 8"),height: 50,width: 300,color: Colors.green,),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("الجزء الثاني",style: TextStyle(color: Colors.white,fontSize: 25,),textAlign: TextAlign.center,),
+                  Text("الجزء الثالث",style: TextStyle(color: Colors.white,fontSize: 25,),textAlign: TextAlign.center,),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
+                  Container(
+                    width: 110,
+                    height: 300,
+                    child: ListView(
+                          scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      // shrinkWrap: false,
+                      reverse: true ,
+                      children: [
+                        Container(child: Text("صفحة 1"),width: 90,height: 50,color: Colors.indigoAccent,),
+                        Container(child: Text("صفحة 2"),width: 90,height: 50,color: Colors.red,),
+                        Container(child: Text("صفحة 3"),height: 50,width: 90,color: Colors.green),
+                        Container(child: Text("صفحة 3"),height: 50,width: 90,color: Colors.indigo,),
+                        Container(child: Text("صفحة 4"),height: 50,width: 90,color: Colors.white,),
+                        Container(child: Text("صفحة 5"),height: 50,width: 90,color: Colors.black,),
+                        Container(child: Text("صفحة 6"),height: 50,width: 90,color: Colors.amber,),
+                        Container(child: Text("صفحة 7"),height: 50,width: 90,color: Colors.pink,),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 110,
+                    height: 300,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      // shrinkWrap: false,
+                      reverse: true ,
+                      children: [
+                        Container(child: Text("صفحة 1"),width: 90,height: 50,color: Colors.indigoAccent,),
+                        Container(child: Text("صفحة 2"),width: 90,height: 50,color: Colors.red,),
+                        Container(child: Text("صفحة 3"),height: 50,width: 90,color: Colors.green),
+                        Container(child: Text("صفحة 3"),height: 50,width: 90,color: Colors.indigo,),
+                        Container(child: Text("صفحة 4"),height: 50,width: 90,color: Colors.white,),
+                        Container(child: Text("صفحة 5"),height: 50,width: 90,color: Colors.black,),
+                        Container(child: Text("صفحة 6"),height: 50,width: 90,color: Colors.amber,),
+                        Container(child: Text("صفحة 7"),height: 50,width: 90,color: Colors.pink,),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Text("الجزء الرابع ",style: TextStyle(color: Colors.white,fontSize: 25,),textAlign: TextAlign.center,),
+              Container(
+                height: 200,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  // shrinkWrap: true,
+                  children: [
+                    Container(child: Text("صفحة 1"),width: 300,height: 50,color: Colors.indigoAccent,),
+                    Container(child: Text("صفحة 2"),width: 300,height: 50,color: Colors.teal,),
+                    Container(child: Text("صفحة 3"),height: 50,width: 300,color: Colors.blue,),
+                    Container(child: Text("صفحة 3"),height: 50,width: 300,color: Colors.green,),
+                    Container(child: Text("صفحة 4"),height: 50,width: 300,color: Colors.indigoAccent,),
+                    Container(child: Text("صفحة 5"),height: 50,width: 300,color: Colors.teal,),
+                    Container(child: Text("صفحة 6"),height: 50,width: 300,color: Colors.blue,),
+                    Container(child: Text("صفحة 7"),height: 50,width: 300,color: Colors.green,),
+
+                  ],
+                ),
+              ),
+
+
+
+            ],
+
+          ),
+        )
+
+
+55
+
+............................................................................................
+54
+ ListView(   // ممكن حطها بكنتينار مشان االتحكم بالمساحة
+          scrollDirection: Axis.vertical, // هون منتجكم اذا بدنا ياها عمودي او افقي
+          padding: EdgeInsets.all(10),
+          reverse: true , //  هذه اذا صح بتعرضه عكس الترتيب الي مرتبه اما اذا كانت خطأ بتعرضه متل ترتيبي الي كاتبه
+          //physics: ClampingScrollPhysics(), //  هي حالة التحكم بتحرك الشاشة هيك يعني حالة افتراضية
+            physics: BouncingScrollPhysics(), // هي بتخلي الشاشة اريح تنزل بشكل جميل
+          // physics: NeverScrollableScrollPhysics(), // هنا امنع تحريك الشاشة تماماً
+          children: [
+            Text("Mahmoud"),
+            Container(child: Text("ali"),width: 300,height: 200,color: Colors.indigoAccent,),
+            Container(child: Text("ali"),width: 300,height: 200,color: Colors.teal,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.blue,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.green,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.indigoAccent,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.teal,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.blue,),
+            Container(child: Text("ali"),height: 200,width: 300,color: Colors.green,),
+
+          ],
+
+        )
+
+54
+
+
+......................................................................
+52 53
+
+
+Center(              //                     هذه AlertDialog رسالة تظهر عند الضغط ع زر ما
+          child: ElevatedButton(
+
+            onPressed: (){
+              showDialog(context: context, builder: (context){
+                 return AlertDialog(
+                   title: Text("إنا لله وإنا إليه راجعووون",textDirection: TextDirection.rtl,textAlign: TextAlign.right,),
+                   // title: Icon(Icons.arrow_downward_rounded,color: Colors.white,),
+                   content: Text(" ياعبدالله اتق الله وخافه",textDirection: TextDirection.rtl,textAlign: TextAlign.right),
+                   backgroundColor: Colors.black,
+                   titleTextStyle: TextStyle(color: Colors.white,fontSize: 30), // اذا كان في خط بتتحكم فيه ممكن من هون هي للعنوان
+                   contentTextStyle: TextStyle(color: Colors.white,fontSize: 20), // ايضا تحكم بخواص محتوى النص
+                   titlePadding: EdgeInsets.all(20), // حواف العنوان
+                   contentPadding: EdgeInsets.all(20), // حواف النص الداخلي
+                   // الحداث التي تنعرض بداخل الزر
+                    actions: [
+
+                      FlatButton(onPressed: (){print("حسنا");}, child: Text("حسناً")),
+                      FlatButton(onPressed: (){
+                        Navigator.of(context).pop(); // مو مهم حاليا نفهمه ولكن هاد بلغي ال Alin عند الضغط
+                        print("إغلاق");}, child: Text("إغلاق"))
+                    ],
+
+                 );
+
+              });
+            },
+          child: Text("آه من ذنوبي"),
+          ),
+        )
+
+
+52 53
+........................................................................
+
+51
+
+
+class TestState extends State<Test>{
+
+     // هذه الرسالة التي تظهر عند الضغط على الزر تدعى SnackBar
+
+  GlobalKey<ScaffoldState> scaffoldkey = new GlobalKey<ScaffoldState>(); // هي من اجل تفعيل ال key وهي مفتاح لميزات كل ويدجت
+  Widget build(BuildContext context){
+    return Scaffold(
+        key: scaffoldkey, // هلأ منوصل لخواص ال scaffold من خلال هاد المفتاح
+
+      appBar: AppBar(),
+      drawer: Drawer(),
+      body:  Center(
+        child: ElevatedButton(
+
+          onPressed: (){
+            var snackbar = SnackBar(
+              action: SnackBarAction( // خاصية مهمة زر يظهر لإغلاق الرسالة بالضفط عليه مهما كانت مدة الرسالة
+                label: "إغلاق الرسالة",
+                textColor: Colors.white,
+                onPressed: (){
+                  print("اغلاق الرسالة ");
+                },
+              ),
+              // تظهر عند الضغط على الزر
+              onVisible: (){
+                print("تظهر عند الضغط على الزر ");
+              },
+              behavior: SnackBarBehavior.floating,
+              content: Text("اتق الله",style: TextStyle(fontSize: 20),textAlign: TextAlign.center,),
+              duration: Duration(seconds: 5), // مدة الظهور ممكن التحكم بها كيف تشاء
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.all(100), // behavior: SnackBarBehavior.floating,هذه لاتفعل فورا بدون
+            );
+            scaffoldkey.currentState.showSnackBar(snackbar);
+          },
+          child: Text("أظهر رسالة"),
+        ),
+      )
+    );
+
+
+
+51
+.......................................................
+50                 CircleAvatar
+
+Container(
+        color: Colors.indigoAccent,
+        child: Center(
+          child: CircleAvatar(
+            // backgroundColor: Colors.teal,
+            backgroundImage: AssetImage("images/1.jpg"),
+            child: Text("OK",style: TextStyle(color: Colors.black),),
+            radius: 50,
+          )
+        ),
+      )
+
+50
+........................................................
+49                     ListTile
+
+ListTile(
+          tileColor: Colors.blue,
+          title: Text("اللهم صل على سيدنا محمد وعلى آله وسلم",) ,
+          subtitle: Text("في كل لحظة وحين"),
+          leading: Icon(Icons.add),
+          trailing: Text("خير الخلق"),
+          onTap: () {
+            print("this is good");
+          },
+          onLongPress: (){print("this is very good");},
+
+        ),
+
+49
+.................................................
+
+bool a = false ; // group 1
+
+
+48
+      SwitchListTile هذه
+            نفس Switch ولكن هناك عدة فروقات اهمها لاتحتاج إلى ويدجت مساعدة لإضافة نص او ايقونة او اي شيء وتحوي مزايا رائعة
+
+
+Center(
+          child:
+            SwitchListTile(
+                title: Text("هل تريد تشغيل الإشعارات"),
+                subtitle: Text("الرجاء الإختيار "),
+                secondary: Icon(Icons.star),
+                controlAffinity: ListTileControlAffinity.leading,
+                isThreeLine: true , // للتنسيق
+                activeTrackColor: Colors.black, // لون الشريط بحال التفعيل
+                activeColor: Colors.red, // لون الدويرة بحال التفعيل
+                inactiveThumbColor: Colors.teal, // لون الدويرة بحال عدم التفعيل
+                inactiveTrackColor: Colors.indigoAccent, // لون الشريط في حال عدم التفعيل
+                value: a,
+                onChanged: (val){
+              setState(() {
+                a = val ;
+                print(a);
+              });
+            })
+
+
+    )
+
+
+
+48
+..........................................................
+47
+             Switch
+
+Row(
+             mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+
+            Text("  إيقاف الإشعارات"),
+            Switch(
+                activeTrackColor: Colors.black, // لون الشريط بحال التفعيل
+                activeColor: Colors.red, // لون الدويرة بحال التفعيل
+                inactiveThumbColor: Colors.teal, // لون الدويرة بحال عدم التفعيل
+                inactiveTrackColor: Colors.indigoAccent, // لون الشريط في حال عدم التفعيل
+                value: a,
+                onChanged: (val){
+              setState(() {
+                a = val ;
+                print(a);
+              });
+            })
+          ],
+    )
+
+
+47
+............................................................
+46
+
+  درس RadioListTile يحوي عدة ميزات عن Radio وهو أنه قادر على العمل دون Row
+
+Container( padding: EdgeInsets.all(10),
+        child: Column(
+
+
+          children: [
+
+            Text("اختر ماتحب" ,style: TextStyle(fontSize: 40),),
+
+            RadioListTile(
+                title: Text("10"),
+                subtitle: Text("10 Points = 100 SY"),
+                value: "قيمة 1",
+                groupValue: a ,
+                onChanged: (val){
+                  setState(() {
+                    a = val ;
+                  });
+                }),
+
+            RadioListTile(
+                controlAffinity: ListTileControlAffinity.trailing, // تبديل بين الأيقونة وزر الضغك
+                selected: a == "قيم2 " ? true : false , // شرط مشان نغير لون كامل
+                activeColor: Colors.red , // هذا اللون الذي يحدث إذا تحقق الشرط
+                secondary: Icon(Icons.star,color: Colors.amber,), // تعليمة لإضافة ايقونة
+                title: Text("20"),
+                subtitle: Text("20 Points = 200 SY"),
+                value: "قيم2 ",
+                groupValue: a ,
+                onChanged: (val){
+                  setState(() {
+                    a = val ;
+                  });
+                }),
+
+            RadioListTile(
+                title: Text("30"),
+                subtitle: Text("30 Points = 300 SY"),
+                value: "قيمة 3",
+                groupValue: a ,
+                onChanged: (val){
+                  setState(() {
+                    a = val ;
+                  });
+                })
+          ],
+
+        ),
+
+      )
+
+46
+
+..........................................................
+45
+
+String ca ; // هذا غروب 1
+String ca1 ; // هذا غروب 2
+
+// ال Radio متل ال CheckboxListTile بتفرق انو مابقدر اخترالا خيار واحد فقط وبقلب لغروب تبعه هل حكي
+
+           Row(
+             children: [
+               Text("نقطة 10"),
+                Radio(value: " تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 10", groupValue: ca, onChanged: (val)
+                {setState(() {
+                  ca = val;
+                });
+
+                }
+                )
+             ],
+
+           ),
+            Row(
+              children: [
+                Text("نقطة 20"),
+                Radio(value: " تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 20", groupValue: ca, onChanged: (val)
+                {setState(() {
+                  ca = val;
+                });
+
+                }
+                )
+              ],
+
+            ),
+            Row(
+              children: [
+                Text("نقطة 30"),
+                Radio(value: " تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 30", groupValue: ca, onChanged: (val)
+                {setState(() {
+                  ca = val;
+                });
+
+                }
+                )
+              ],
+
+            ),
+
+            Text("اختر ماتحب" ,style: TextStyle(fontSize: 40),),
+// ال Radio متل ال CheckboxListTile بتفرق انو مابقدر اخترالا خيار واحد فقط وبقلب لغروب تبعه هل حكي
+
+            Row(
+              children: [
+                Text("نقطة 10"),
+                Radio(value: " تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 10", groupValue: ca1, onChanged: (val)
+                {setState(() {
+                  ca1 = val;
+                });
+
+                }
+                )
+              ],
+
+            ),
+            Row(
+              children: [
+                Text("نقطة 20"),
+                Radio(value: " تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 20", groupValue: ca1, onChanged: (val)
+                {setState(() {
+                  ca1 = val;
+                });
+
+                }
+                )
+              ],
+
+            ),
+            Row(
+              children: [
+                Text("نقطة 30"),
+                Radio(value:" تقبل أي قيمة مو شرط bool ولكن كل واحدة بقيمة 30", groupValue: ca1, onChanged: (val)
+                {setState(() {
+                  ca1 = val;
+                });
+
+                }
+                )
+              ],
+
+            ),
+
+45
+ ...............................................................................
+ 44
+  bool a = false ;
+  bool b = false ;
+  bool c = false ;
+  bool d = true ;
+  bool e = true ; // عند تغيير القيمة كانت النتيجة ظهور الصح فورا
+
+    CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading, // قلب مكان الأختر
+              activeColor: Colors.blue,
+                // contentPadding:EdgeInsets.symmetric(horizontal: 30) ,
+                title: Text(" التهجد",style: TextStyle(fontSize: 30,),),
+                subtitle: Text("الساعة 3"),
+                 secondary: Icon(Icons.ac_unit),
+                isThreeLine: true , // بتخلي الشكل محاذي لبعضه
+                selected: a ,
+                value: a,
+                onChanged: (val) { setState(() {
+
+                  a = val;
+                });}
+
+
+            ),
+
+            CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.platform, // قلب مكان الأختر
+                activeColor: Colors.blue,
+                // contentPadding:EdgeInsets.symmetric(horizontal: 30) ,
+                title: Text(" التهجد",style: TextStyle(fontSize: 30,),),
+                subtitle: Text("الساعة 3"),
+                secondary: Icon(Icons.ac_unit),
+                isThreeLine: true , // بتخلي الشكل محاذي لبعضه
+                selected: b ,
+                value: b,
+                onChanged: (val) { setState(() {
+
+                  b = val;
+                });}
+
+
+            ),
+
+            CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.trailing,
+                activeColor: Colors.red,
+                // contentPadding:EdgeInsets.symmetric(horizontal: 30) ,
+                title: Text(" التهجد",style: TextStyle(fontSize: 30,),),
+                subtitle: Text("الساعة 3"),
+                secondary: Icon(Icons.ac_unit),
+                isThreeLine: true , // بتخلي الشكل محاذي لبعضه
+                selected: c ,
+                value: c,
+                onChanged: (val) { setState(() {
+
+                  c = val;
+                });}
+
+
+            ),
+
+
+
+44
+...............................................................................
+
+// 43         Checkbox
+ Container(
+         alignment: Alignment.center,
+         padding: EdgeInsets.all(10),
+         child: Column(
+           children: [
+             Text("أجزاء القرآن الكريم",style: TextStyle(fontSize: 30),),
+
+             Row(
+
+               children: [
+                 Text("الجزء الأول"),
+               // مهمتها الرئيسية تغير القيمة وتحتاج الى متغير من نوع bool
+               Checkbox(
+
+                 activeColor: Colors.red, // لون الخيار
+                  checkColor: Colors.black, // لون الأيقونة
+                  focusColor: Colors.blue,
+                   value: a , // القيمة المسندة
+                   onChanged: (val)  // نعرف متغير باسم ما نغير به القيمة ونأسندها للمتغير الأساسي الذ هو هنا a
+                   {
+                setState(()  // من أجل إظهار التفاعل على الشاشة
+                {
+                  print(a); // قبل الإسناد
+                  a = val ;
+                  print(val); // بعد الإسناد
+                });
+                   }
+               )],
+             ),
+
+
+             Row(
+
+               children: [
+                 Text("الجزء الثاني"),
+                 // مهمتها الرئيسية تغير القيمة وتحتاج الى متغير من نوع bool
+                 Checkbox(
+                     value: b,
+                     onChanged: (val){
+                       setState(() {
+                         print(val); // قبل الإسناد
+                         b = val ;
+                         print(val); // بعد الإسناد
+                       });
+                     }
+                 )],
+             ),
+
+
+             Row(
+
+               children: [
+                 Text("الجزء الثالث"),
+                 // مهمتها الرئيسية تغير القيمة وتحتاج الى متغير من نوع bool
+                 Checkbox(
+                     value: c ,
+                     onChanged: (val){
+                       setState(() {
+                         print(val); // قبل الإسناد
+                         c = val ;
+                         print(val); // بعد الإسناد
+                       });
+                     }
+                 )],
+             ),
+
+
+             Row(
+
+               children: [
+                 Text("الجزء الرابع"),
+                 // مهمتها الرئيسية تغير القيمة وتحتاج الى متغير من نوع bool
+                 Checkbox(
+                     value: d ,
+                     onChanged: (val){
+                       setState(() {
+                         print(val); // قبل الإسناد
+                         d = val ;
+                         print(val); // بعد الإسناد
+                       });
+                     }
+                 )],
+             ),
+
+
+             Row(
+
+               children: [
+                 Text("الجزء الخامس"),
+                 // مهمتها الرئيسية تغير القيمة وتحتاج الى متغير من نوع bool
+                 Checkbox(
+                     value: e ,
+                     onChanged: (val){
+                       setState(() {
+                         print(val); // قبل الإسناد
+                         e = val ;
+                         print(val); // بعد الإسناد
+                       });
+                     }
+                 )],
+             ),
+
+           ],
+         ),
+       )
+
+// 43
+...............................................................................
+
+
+// 40 and 41 and 42      (DropdownButton) الدرج
+//
+ var student ;  //  متغير نخزن به القيم هذا لازم يتعرف خارج ال body
+            Center(
+//         child: Container(
+//
+//           color: Colors.blue,
+//            margin: EdgeInsets.symmetric(horizontal: 20),
+//            padding: EdgeInsets.all(20),
+//
+//                     // child: DropdownButtonHideUnderline(  // بهل شكل   DropdownButtonHideUnderline ممكن مشان الغاء الخط السفلي احطها بويدجت اسمها
+//                       child: DropdownButton(
+//                         itemHeight: 50,
+//                         iconDisabledColor: Colors.red, // هذا لما تكون غير مفعلة يعني يكون onChanged: nulll
+//
+//                         onTap: (){print(".......one pressed........");}, // هذه اول ضغطة
+//                         icon: Icon(Icons.add,color: Colors.white,), // الأيقونة تكون بشكل اعتيادي سهم
+//
+//                         iconSize: 40, // حجم الأيقون
+//                         dropdownColor: Colors.indigoAccent, // لون الخيارات
+//                         isExpanded: true, //  هذه تمدد على كامل الصفحة لكن المارجن خففتها
+//                         underline: Divider(thickness: 0 ,), // هذا الخط الموجود تحت الكلام thickness سماكة الخط
+//
+//                          hint: Container(width: double.infinity,
+//                                       child: Text("اختر فئة الطلاب",textDirection: TextDirection.rtl,textAlign: TextAlign.right,style: TextStyle(fontSize: 35 ,color: Colors.white),)
+//                          ), // هذا اسم البدأ فقط
+//
+//                         // هذه من نوع list ويجب ان تكون DropdownMenItem لهذا مررنا قيمة map ثم حولنا الى list
+//                         items: ["الأول","الثاني","الثالث","الرابع","الخامس"]
+//                         .map((e) => DropdownMenuItem(
+//                                 child: Container(width: double.infinity,
+//                                     child: Text(" حُفاظ الجزء $e ",textDirection: TextDirection.rtl,textAlign: TextAlign.right,style: TextStyle(color: Colors.white,fontSize: 30),)), //  هذا منظر فقط الواجهة ولا تأثر شيء إذا غيرت اسمها وضغطت
+//                                 value: e,
+//                                 )).toList(),
+//                         // ش onChanged  هذه تعمل عند الضغط على أي قيمة فتمرر القيمة المضغوطة
+//                        onChanged: (val){
+//                        setState(() {
+//                                print(student);
+//                                student = val ;  // نخزن القيمة المضغوطة هنا
+//                                print(student); // هذا فقط لرؤية القيمة بعد التخزين
+//                        });
+//
+//                        },
+//                         value: student,   // هذه التي تمرر القيم وبدونها لا تظهر القيم عند الضغط
+//                       ),
+//                     // ),
+//         ),
+//       ),
+
+ //  ملاحظة هناك ويدجت نفس DropdownButton بنسبة 90% ولكن فيها ثلاث خواص اضافية سنأتي على شرحها اسمها DropdownButtonFormField
+
+// 40 and 41 and 42
+
+
+...............................................................................
+
+// 39
+//  String test = "How are you";  // متغير
+// // هذه ال StateFulWidget تتميز بأنها من اجل التفاعل استطيع استخدام {}()setState  على عكس StatelessWidget لا استطيع
+// class Test extends StatefulWidget{
+//   State<StatefulWidget> createState(){
+//     return TestState();
+//
+//   }
+// }
+// class TestState extends State<Test>{
+//   Widget build(BuildContext context){
+//     return Scaffold(
+//       appBar: AppBar(),
+//       drawer: Drawer(),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text("$test"),
+//           ElevatedButton(
+//             child: Text("Pressed"),
+//           onPressed:(){
+//               // هذه من اجل ادخال التفاعل
+//           setState(() {
+//             test ="Welcome";
+//           });
+//           print(test);},
+//       )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+// class Login extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(), // هاد الخط الفوقاني
+//         drawer: Drawer(), // هاد الدرج الجانبي
+//        floatingActionButton: FloatingActionButton(
+//          onPressed: (){},
+//          backgroundColor: Colors.red,
+//          child: Icon(Icons.add),
+//        ),
+//         body: Text("How are you")
+//     ) ;  }
+// }
+
+// 39
+
+
+
+    // 38
+      // Center(
+        //   child: GestureDetector( // هي نفس نوع ال InKWell ولكن اكثر مرونة
+        //
+        //     child: Container(
+        //       height: 60,
+        //         width: 60,
+        //         alignment: Alignment.center,
+        //         color:Colors.indigoAccent ,
+        //         child: Text("ADD")
+        //     ),
+        //     // تعمل عند الضغط
+        //     // onTapDown: (Parimeter){
+        //     //   print("one");
+        //     // },
+        //     // // تعمل عند رفع الضغط
+        //     // onTapUp: (parimetar){
+        //     //   print("tow");
+        //     // },
+        //     // // تعمل عند ازاحة الضغطة عن الزر
+        //     // onTapCancel: (){
+        //     //   print("cancel");
+        //     // },
+        //     // // تعمل عند الكبسة الطويلة
+        //     // onLongPress: (){
+        //     //   print("Long Press");
+        //     // },
+        //     // ضغطة طويلة تظهر
+        //     // onLongPressStart:(a){
+        //     //    print("one");
+        //     //     } ,
+        //     // // ثم تليها هذه تظهر حتى لو خرجت من محيط الزر
+        //     // onLongPressEnd: (b){
+        //     //   print("tow");
+        //     // },
+        //     // عند ضغط ضغتين سريعتين تطبع
+        //     // onDoubleTap: (){
+        //     //   print("add");
+        //     // },
+        //   ),
+        // ),
+// 38
+
+
+
+
+   // 37
+        // هذه هامة جدا لاتتعلق بال body وتبقى ثابتة في الشاشة
+        // floatingActionButton:  FloatingActionButton(
+        //   onPressed: (){
+        //     print("الطالب فلان ");
+        //   },
+        //   child: Icon(Icons.add),
+        //   backgroundColor: Colors.indigoAccent,
+        // ),
+        // backgroundColor: Colors.amber, // مالا علاقة بالدرس "_"
+        //
+        // body: ListView(
+        //     children: [
+        //       Container(
+        //
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //       child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //      IconButton(icon: Icon(Icons.star), onPressed:(){}),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),  Container(
+        //         alignment: Alignment.center ,
+        //         color: Colors.blue,
+        //         width: double.maxFinite,
+        //         height: 100,
+        //         margin: EdgeInsets.only(top: 20,bottom: 20),
+        //         child: Text("الاسم كذا كذا ",style: TextStyle(fontSize: 60),),
+        //       ),
+        //
+        //
+        //
+        //     ],
+        // )
+
+// 37
+
+// 36
+    //     InkWell( // هاد بيعطيك زر اختاري انت بتسويه متل مابدك
+    // child: Container(
+    // child: Text("ADD"),
+    // width: 100,
+    // height: 100,
+    // color: Colors.red,
+    // padding: EdgeInsets.symmetric(vertical: 30),
+    // alignment: Alignment.center,
+    //
+    // ),
+    // // نفس ال onPressed تماما
+    // onTap: (){print("نفس ال onPressed تماما");},
+    //
+    // )
+
+//  زر أيقونات
+    //     IconButton(
+    //     onPressed: (){ print("click ");
+    // },
+    // iconSize: 50,
+    // icon: Icon(Icons.add),
+    // color: Colors.green,
+    // splashColor: Colors.red,
+    // padding: EdgeInsets.symmetric(vertical: 30),
+    // ),
+
+// end 36
+
+
+
+    // انواع الازرار 35
+    //     Center (
+    //     child:TextButton( // مافي شادو
+    //        onPressed: (){},
+    //       child: Text("click"),
+    //       style: TextButton.styleFrom(
+    //         primary: Colors.red,
+    //         backgroundColor: Colors.green,
+    //       ),
+    // )
+    //     )
+
+        // MaterialButton( // فيه كل خواص الأنواع الثانية وأبسط
+        //   onPressed: (){},
+        //   child: Text("Pressed"),
+        //   color: Colors.blue,
+        //   textColor: Colors.white,
+        //   splashColor: Colors.amber,
+        //   height: 30,
+        //   minWidth:100 , // اقل عرض
+        // ),
+        // )
+
+
+        // Center(
+        //    child: ElevatedButton.icon( // تستطيع اذافة ايكون  ولكن لاتحوي شيلد بل ايكون واليبل  هذه الخاصية الجديدة
+        //      style: ElevatedButton.styleFrom( // من اجل اضافة الخواص
+        //        primary: Colors.red,
+        //        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        //        elevation: 50 , shadowColor: Colors.black ,
+        //        textStyle: TextStyle(fontSize: 20 ,fontWeight: FontWeight.bold ),
+        //        shape: RoundedRectangleBorder(borderRadius: BorderRadiusDirectional.circular(60)) // من اجل الحواف
+        //      ),
+        //      onPressed: (){print("hi");},
+        //      label: Text("Click Button "),
+        //      icon: Icon(Icons.add),
+        //    ),
+        // )
+
+// end 34
+
+
+
+        // start 33
+        // Center(
+        //
+        //   child:RaisedButton( // نوع من أنواع الأزرار صحيح تم استبدالها ب ElevatedButton ولكن المستبدل لاتقبل خواص
+        //     textColor: Colors.white, // لون مايحويه
+        //     color: Colors.black, // لون الزر
+        //     padding: EdgeInsets.symmetric(horizontal: 50,vertical: 10),
+        //     elevation: 20 ,// هذه الظل
+        //     splashColor: Colors.red, //   هذه تعطي لون  عند الضغط
+        //     // disabledColor: Colors.red,// كلشي تعليمات ديسابل يعني لما تكون قيمة ال onPressed: null غير هيك مابشتغلو
+        //     // هذه عند الضغط بشكل مطول
+        //     onLongPress: (){ print(" تم الأمر");},
+        //     // هذه يعني عند الضغط
+        //     onPressed: () {
+        //     print("Sign Up");
+        //   },
+        //
+        //   child: Text("إنشاء الحساب",),
+        //   ),
+        // )
+// end 33
+
+
+
+
+      // start 32
+
+      // Container(
+        //   width: 200 , height:  200 ,color: Colors.red,margin: EdgeInsets.all(50), // الفرق بين ال padding و margin أن البادنغ لأبعاد داخل الكونتينر أما المارجن الصندوق الخارجي للكونتينر
+        //   child: Center ( //  هذه الويدجت تجعل الشيلد بمنتصف الصفحة اذا كانت بكنتينار وأعطيناه أبعاد فسوف تجعل الشيلد بالمنتصف
+        //   child: Text("MOHAMMAD",style: TextStyle(fontSize: 30),),
+        //   ),
+        // )
+
+
+        // Center ( //  هذه الويدجت تجعل الشيلد بمنتصف الصفحة اذا كانت بكنتينار وأعطيناه أبعاد فسوف تجعل الشيلد بالمنتصف
+        //   child: Text("MOHAMMAD",style: TextStyle(fontSize: 60),),
+        // )
+
+    // Container( // في حال عدم وجود ويدجت بياخد طول وعرض كامل الصفحة .. في حالة وجود ويدجت بياخد عرضها وطولها إلا في حالة إضافة طول وعرض لكونتينار
+
+// end 32
+
+
+
+
+
+
+
+          // 31
+        //   Row(
+        //     children: [
+        //       Text("ولكنه مرهق ومتعب "),
+        //       SizedBox ( // هذه نفس الكونتينار العادي ولكن لاتقبل لون واستطيع من خلالها الفصل بين الصوؤر والأيقونات بالطول والعرض
+        //        width: 200,
+        //       ),
+        //       Text("البرمجة شيء جميل "),
+        //
+        //     ],
+        //   ),
+        //
+        // )
+
+// end 31
+
+
+
+
+
+
+
+
+
+
+
+
+            // درس 30
+        // SingleChildScrollView( // هام جدا هي بتخلي الويدجات تنسحب على نفس المحور لازم تحديد المحور يتناسب مع ال row او column
+        //  scrollDirection: Axis.horizontal,
+        //   child: Row(
+        //   children: [
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //   ],
+        // ),)
+// نهاية 30
+
+
+
+
+
+
+
+        // درس 29
+        // Wrap( // هذه بدل من column و Row اذا كانت الشاشة لاتسع
+        //   direction: Axis.horizontal,
+        //   children: [
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //     Container(
+        //       margin:EdgeInsets.all(10) ,
+        //       color: Colors.red,
+        //       width: 100,
+        //       height: 100,
+        //     ),
+        //   ],
+        // )
+//نهاية 29
+
+
+
+
+  // درس 28
+  //       Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 20), // اخذ فراغ افقي على لجناب بقدر 20
+  //           width:500 ,
+  //           child: IndexedStack(  // هي الخاصية مابتأظهر غير ويدجت وحدة فقط برقمهم من 0 ال أخر ويدجت
+  //             index: 0,
+  //             children: [
+  //             Container(
+  //               width: 500,height: 500,
+  //               color: Colors.green,
+  //               child: Text("one"),
+  //               ),
+  //               Container(
+  //                 width: 400,height: 400,
+  //                 color: Colors.deepOrange,
+  //                 child: Text("two"),
+  //               ),
+  //
+  //           ],
+  //         ),
+  //       )
+
+// نهاية 28
+
+
+
+
+
+        // أول تصميم متعب 25 26 27
+        // Container (
+        //
+        // child: Column (
+        //   children: [
+        //     Container(
+        //     width: 350,
+        //     height: 60,
+        //     alignment: Alignment.center,
+        //      margin: EdgeInsets.only( top:150  ),
+        //   decoration: BoxDecoration(
+        //     color: Colors.blue,
+        //     border: Border.all(color: Colors.black ,width: 2),
+        //   ),
+        //     child : Text("Strawberry Pavlova Recipe",
+        //     style: TextStyle (
+        //           fontSize: 22 ,
+        //          fontWeight: FontWeight.w500 ,
+        //           color: Colors.white
+        //     ),
+        //     )) ,
+        //
+        //   Container(
+        //     alignment: Alignment.bottomCenter,
+        //     padding: EdgeInsets.only(top:10 , left: 15 ,right: 15,bottom: 10),
+        //     child: Text(
+        //       "Pavlova is a meringue-based dessert \nnamed after th Russian ballerina Anna  "
+        //       "Pavlova.Pavlova features a crisp crust and \nsoft, light inside, topped with fruit and \n"
+        //           "whipped cream ", textAlign: TextAlign.center,
+        //       style: TextStyle(
+        //         fontSize: 16 ,
+        //         fontWeight: FontWeight.w600 ,
+        //         color: Colors.black , height: 1.5 // مسافة بين الأسطر
+        //
+        //
+        //       ),
+        //
+        //     ),
+        //   ),
+        //
+        //     Container(
+        //       alignment: Alignment.bottomCenter,
+        //         width: 350, height: 180 ,
+        //         decoration: BoxDecoration(
+        //         border: Border.all(color: Colors.black ,
+        //         width:1, ),
+        //       ),
+        //         child :  Column(
+        //
+        //           children: [
+        //             Expanded(
+        //
+        //               child: Container(
+        //                   padding: EdgeInsets.only(top:20  ),
+        //
+        //                 child:  Row(
+        //                       mainAxisAlignment: MainAxisAlignment.spaceAround, // شو بتريح هل حركة بتفصل بين الويدجات
+        //                   children: [
+        //                     Row(children :[
+        //                       Icon(Icons.star,color: Colors.amber,size: 27,),
+        //                       Icon(Icons.star,color: Colors.amber,size: 27),
+        //                       Icon(Icons.star,color: Colors.amber,size: 27),
+        //                       Icon(Icons.star,size: 27),
+        //                       Icon(Icons.star,size: 27),
+        //                     // Text("                      "),
+        //                     ]),
+        //                      Text("17 review",
+        //                      style: TextStyle(fontSize: 22,
+        //                          fontWeight: FontWeight.w600 ,
+        //                          color: Colors.black),
+        //                      )
+        //
+        //                   ],
+        //                 )),),
+        //
+        //
+        //             Expanded(
+        //
+        //                 child: Container(
+        //                     padding: EdgeInsets.only(top:20 ,bottom: 20),
+        //                     child:  Row(
+        //                       children: [
+        //                 Expanded( flex :1 ,
+        //                   child:
+        //                 Icon(Icons.restaurant, size: 45,color: Color(0XFF2E6F32),),),
+        //                 Expanded(flex: 1,
+        //                   child:
+        //                 Icon(Icons.category,size: 45,color: Color(0XFF2E6F32),),),
+        //                 Expanded(flex: 1,
+        //                   child:
+        //                 Icon(Icons.local_cafe,size: 45,color: Color(0XFF2E6F32),),),
+        //
+        //
+        //
+        //
+        //
+        //               ],
+        //             ))),
+        //             Expanded(
+        //
+        //                 child: Container(padding: EdgeInsets.only(top:20 ,left: 2 ),
+        //                     child:  Row(
+        //                       children: [
+        //                         Expanded( flex :1 ,
+        //                           child:
+        //                           Text('           Feed',style: TextStyle(fontSize:16 ,fontWeight: FontWeight.w500))),
+        //                         Expanded(flex: 1,
+        //                           child:
+        //                           Text('           Feed',style: TextStyle(fontSize:16 ,fontWeight: FontWeight.w500))),
+        //                         Expanded(flex: 1,
+        //                           child:
+        //                           Text('           Feed',style: TextStyle(fontSize:16 ,fontWeight: FontWeight.w500),)),
+        //
+        //                       ],
+        //                     ))),
+        //
+        //             Expanded(
+        //
+        //                 child: Container(padding: EdgeInsets.only(  left:2,bottom: 20),
+        //                     child:  Row(
+        //                       children: [
+        //                         Expanded( flex :1 ,
+        //                             child:
+        //                             Text('           2-   4',style: TextStyle(fontSize:16,fontWeight: FontWeight.w500 ))),
+        //                         Expanded(flex: 1,
+        //                             child:
+        //                             Text('           2-   4',style: TextStyle(fontSize:16 ,fontWeight: FontWeight.w500))),
+        //                         Expanded(flex: 1,
+        //                             child:
+        //                             Text('           2-   4',style: TextStyle(fontSize:16  ,fontWeight: FontWeight.w500),)),
+        //
+        //                       ],
+        //                     ))),
+        //           ],)
+        //     )
+        //   ],
+        // ),
+        // )
+
+
+// نهاية 25 26 27
+
+
+
+      //......................................................
+
+      //درس 24
+  //       Column (
+  //         children: [
+  //           Text("HOw are you ",style: TextStyle(fontSize: 30),),
+  //           Divider(color: Colors.deepOrange,thickness: 10,height: 100,), // هذا خط فاصل من اجل ال Row نستخدم VerticalDivider
+  //           Text("HOw are you ",style: TextStyle(fontSize: 30)),
+  //           ],
+  //
+  //
+  // )
+
+      // نهاية 24
+
+
+
+
+
+      //......................................................
+        // درس 23 مع كثير من الإضافات
+        // Column(
+        //     children :[
+        // Container(
+        //   alignment: Alignment.bottomCenter,
+        //   child: Icon(
+        //     Icons.access_alarm_sharp, // في كثير من الأيقونات ابحث icons matrial design flutter
+        //     size: 200,
+        //     color: Colors.black,
+        //   ),
+        // ),
+        //       Container(
+        //         width: double.maxFinite,
+        //         alignment: Alignment.bottomCenter,
+        //         color: Colors.amber,
+        //         child: Text (' الساعة الذكية',
+        //           style: TextStyle (fontSize: 30 ),
+        //         ),
+        //       ),
+        //       Container(
+        //         alignment: Alignment.bottomCenter,
+        //         child: Icon(
+        //           Icons.add_a_photo_outlined, // في كثير من الأيقونات ابحث icons matrial design flutter
+        //           size: 200,
+        //           color: Colors.black,
+        //         ),
+        //       ),
+        //
+        //       Container(
+        //         width: double.maxFinite,
+        //         alignment: Alignment.bottomCenter,
+        //         color: Colors.deepOrange,
+        //         child: Text ('الكميرا  الذكية',
+        //           style: TextStyle (fontSize: 30 ),
+        //         ),
+        //       ),
+        //     ]
+        // )
+        //
+        //
+      // نهاية 23
+
+
+
+      //......................................................
+      // درس 22
+      //   Column (
+      //     children: [
+      //       Expanded(
+      //         flex: 3,
+      //         child:
+      //       Container(
+      //         color: Colors.amber,
+      //         child: Text ("one",
+      //         style: TextStyle(
+      //           fontSize: 40
+      //         ),
+      //         ),
+      //         width: double.maxFinite,
+      //       ),),
+      //
+      //       Expanded(
+      //         flex: 1,
+      //         child:
+      //       Container(
+      //         color: Colors.teal,
+      //         child: Text ("Two",
+      //           style: TextStyle(
+      //             fontSize: 40
+      //         ),
+      //         ),
+      //         width: double.maxFinite,
+      //       ),),
+      //
+      //       Expanded(
+      //           flex: 3,
+      //           child:
+      //       Container(
+      //         color: Colors.deepOrange,
+      //         child: Text ("three",
+      //           style: TextStyle(
+      //               fontSize: 40
+      //           ),
+      //         ),
+      //         width: double.maxFinite,
+      //       ))
+      //
+      //     ],
+      //
+      //   )
+      //
+
+// نهاية 22
+
+//........................................................
+
+
+        // درس 21
+      //   Row (
+      //
+      //     children: [
+      //       Expanded(// من اجل تمدد الشاشة لكل الجوالات مابتفرق
+      //         flex: 2, // هي هامة جدا لتغير عرض الويدجت
+      //         child:
+      //     Container(color: Colors.amber,child: Text("one"),),
+      //       ),
+      //       Expanded( // من اجل تمدد الشاشة لكل الجوالات مابتفرق
+      //        flex: 1,
+      //         child:
+      //         Container(color: Colors.deepOrange,child: Text("tow"),),
+      //       ), Expanded( // من اجل تمدد الشاشة لكل الجوالات مابتفرق
+      //         flex: 1,
+      //         child:
+      //         Container(color: Colors.teal,child: Text("three"),),
+      //       ),
+      //
+      // ],
+      //
+      //   )
+
+// نهاية 21
+
+
+//........................................................
+
+
+        // درس 20
+  //       Container(
+  //   height: 300,
+  //   width: 500,
+  //   color: Colors.amber,
+  //   child: Stack(
+  //
+  //   alignment: Alignment.center, // هي بتحط الكونترات بالنص وممكن فوق او يمين او يسار
+  //     overflow: Overflow.visible, //   اذا في عندي فائض يعني رح يحرج الكونتينار هي بتأظهره فينا نحط Clip هي بتقطع الفائض عكس ال visible
+  //   children: [
+  //     Positioned( // هي الخاصية للتحكم بالموضع
+  //
+  //
+  //   child : Container(
+  //   color: Colors.deepOrangeAccent,
+  //   width: 200,
+  //   height: 200,
+  //   child: Text(
+  //   " هذا الدرس 20 "
+  //
+  //   ),
+  //   )),
+  //
+  //     Positioned( // هي الخاصية للتحكم بالموضع
+  //
+  //         top :100,
+  //         child : Container(
+  //           color: Colors.blue,
+  //           width: 200,
+  //           height: 200,
+  //           child: Text(
+  //               " هذا الدرس 20 "
+  //
+  //           ),
+  //         ))
+  // ]
+  //       )
+  //   )
+
+// نهاي 20
+
+//........................................................
+
+
+
+
+        // الدرس 19
+        // Container(
+        //   height: 400,
+        //   width: 400,
+        //   child: Stack(
+        //
+        //     alignment: Alignment.center, // هي بتحط الكونترات بالنص وممكن فوق او يمين او يسار
+        //
+        //     children: [
+        //       Container(
+        //         color: Colors.deepOrangeAccent,
+        //         width: 400,
+        //         height: 400,
+        //         child: Text(
+        //             " هذا الدرس 19 "
+        //
+        //         ),
+        //       ),
+        //       Container(
+        //         color: Colors.blue,
+        //         width: 300,
+        //         height:300,
+        //         child: Text(
+        //             "تعلم ثم تكلم  "
+        //
+        //         ),
+        //       ),
+        //
+        //     Container(
+        //      color: Colors.tealAccent,
+        //      width: 200,
+        //      height: 200,
+        //      child: Text(
+        //        "اللهم إنك عفو تحب العفو فاعفو عنا "
+        //
+        //      ),
+        //     )
+        //     ],
+        //
+        //   ),
+        // )
+
+// نهاية19
+
+
+
+
+//........................................................
+
+
+        // درس 18
+        // Stack( // هون كل ويدجت فوق الي قبلها طبقات يعني
+        //
+        //   children: [
+        //
+        //     Container(
+        //       color: Color(0XFF96001E),
+        //       child: Text("Mahmoud",
+        //         style:TextStyle(
+        //
+        //           color: Colors.tealAccent,
+        //           fontSize: 30
+        //         ) ,
+        //
+        //
+        //       ) ,
+        //       width: 400,
+        //       height: 400,
+        //     ),
+        //     Container(
+        //       margin: EdgeInsets.only( left: 30 , top: 30 ,right: 30),
+        //       color: Colors.green ,
+        //       width: 300,
+        //       height: 300,
+        //       child: Text ("الحمدلله في كل لحظة ",
+        //       style: TextStyle(
+        //
+        //         fontSize: 30,
+        //        ),
+        //       ),
+        //
+        //     ),
+        //     Container(
+        //       margin: EdgeInsets.only(left: 40 ,top: 80,right: 40),
+        //       color: Colors.blue ,
+        //       width: 200,
+        //       height: 200,
+        //     ),
+        //
+        //   ],
+        //
+        //
+        //
+        // )
+
+// نهاية 18
+
+
+
+
+
+//........................................................
+
+        // درس 17
+        // Container(
+        //   height: 500,
+        //   // width:500 ,
+        //   color: Colors.green,
+        //   child: Row (  //هذه تجعل الويدجت الى جانب بعض هي يعني افقي
+        //     mainAxisSize: MainAxisSize.min , // اقل عرض
+        //     mainAxisAlignment: MainAxisAlignment.center ,
+        //     crossAxisAlignment: CrossAxisAlignment.end ,
+        //     children: [
+        //
+        //       Text("hi I am Mahmoud AL-ALi") ,
+        //       Text("I play .."),
+        //       Container(color: Colors.blue , child: Text("this is very exaitis"),),
+        //       Card(child: Text("but harl ") )
+        //       // Image.asset("images/1.jpg")
+        //     ],
+        //   ),
+        // )
+
+// نهاية 17
+
+
+
+
+//........................................................
+
+
+ // درس 16
+ //        Container(
+ //          width: 500 ,
+ //          color: Colors.green,
+ //          child: Column ( //   بقبل عدة اولاد يعني اكتر من ويدجت متل شي نصي او صورة ..الخ يعني عمودي
+ //            mainAxisAlignment: MainAxisAlignment.spaceAround , //جعل كلشي في المنتصف تماما ممكن تغيير
+ //            crossAxisAlignment: CrossAxisAlignment.start, // التحكم بمحاذاة المحاور
+ //            // mainAxisSize: MainAxisSize.min , //  .ليأخذ أقل طول ممكن من اللون أو ممكن جعلها أكبر لون ب .max
+ //            children: [
+ //
+ //              Text('hi how are you '),
+ //              Text("Yazan"),
+ //              Text("dsfdsf"),
+ //              // Image.asset("images/1.jpg"),
+ //              Container(color: Colors.blue,  child: Text("hi "),),
+ //
+ //
+ //            ],
+ //
+ //          ),
+ //        )
+// نهاية 16
+
+
+
+
+//........................................................
+
+
+
+            //هي اال card بتعطي خواص ظل للشاشة
+        // Card(
+        //
+        //   color:Colors.teal,
+        //   elevation: 500, //امتداد الظل ع شاشة
+        //   shadowColor: Colors.blue, //لون ظل
+        //
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(10),
+        //     side: BorderSide(color: Colors.amber)
+        //   ),
+        //   child: Text(
+        //
+        //     "How Are You",
+        //
+        //     style: TextStyle(fontSize: 40, ),
+        //
+        //
+        //   ),
+
+
+
+
+
+
+        // Image.network("https://www.nicepng.com/png/detail/266-2660525_google-chrome-logo-png-google-chrome-iphone-icon.png",
+        // width: 300,height: 300,fit: BoxFit.fill,)
+
+
+
+      //     Container // هي صندوق
+    //         (
+    //       color: Colors.green ,
+    //         // Alignment.center  تجعل الكلام في المنتصف
+    //       // alignment: Alignment.center,
+    //       width: 700,
+    //       height: 100, // هي عرض الصندوق
+    //       margin: EdgeInsets.only( top:100  ), //// هي بتعطي حواف للصندوق
+    //       // أو (margin : EdgeInsets.symmetrical (vertical : 10
+    //       // أو (margin : EdgeInsets.formLTRB (10 ,23 ,22 ,40
+    //       // height:  250 , // هي طول الصندوق
+    //       // padding: EdgeInsets.only(top: 10 , left: 10), // هامش للصندوق ولكن الداخلي الخاص بالنص
+    //       // هي ال decoration متل صف فيه ميزات مختلفة متل البوردر
+
+
+    //   //         decoration: BoxDecoration(
+    // //           // هي بتعطي خطأ اذا ماكانت تبع الألوان بداخلها
+    // //           // border: Border.all(color: Colors.pink ,width: 10), // حواف
+    // //           //  اي شي بياخده البوردر من حجم رح يكون عم ياخده من حجم الصندوق الخارجي الكونتر والبادنغ كمان بطرحوا الحجم من الحجم الرئيسي
+    // //           // borderRadius: BorderRadius.circular(100), // جعل حواف دائرية
+    // //           // borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40)),// حواف جانبيبة
+    // //           color: Colors.green,
+    // //           boxShadow: [
+    // //             BoxShadow(color: Colors.black,blurRadius: 20,offset:Offset(100,100) )
+    // //           ]
+    // //           // image: DecorationImage(
+    // //           //   fit: BoxFit.fill, // هي خاصية رائعة لجعل الصورة تتناسب مع كل الأجهزة BoxFit.fill
+    // //           //   image: AssetImage(
+    // //           //       "images/1.jpg"), // لإستدعاء الصورة ولكن بشرط هو الدخول لل pubspec وإضافة المجلد بحذر : assets ثم نكبس انتر ونضع - تحت ثالث حرف ثم انتر ونضع المجلد /images
+    // //           //   repeat: ImageRepeat.repeatY, // بعمل تكرار للصورة بمحل الفراغ بشرط يكون BoxFit.contain
+    // //           // )
+    // ),
+
+
+
+      //
+    //       // هون للنص او ممكن الصورة او اي شي وخصائصه
+    //       child: Text(
+    //         "جامع سعيد بن عامر", // هون شو بدك تكتب
+    //        textAlign: TextAlign.start,// مشان تغير مكان النص والستارت بتتناسب حسب اللغة عربي اة انجلش
+    //         style: TextStyle(
+    //
+    //             fontSize: 30, //   هون حجم الخط بالأنش
+    //         //     color: Color(
+    //         //         0XFF2133cd), //  .. لون الخط وفي طريقة تانية كالتالي color:Colors.black مثلا ملاحظة كنترول + انتر بتخار الوان بشكل حلو
+    //         //     fontWeight: FontWeight.w500, // هون عرض الخط
+    //         //     letterSpacing: 2.0, //  مسافة بين الأحرف بالأنش
+    //         //     wordSpacing: 8, // المسافة بين الكلمات بالأنش
+    //         //     // هي هامة للعب بالخط اذا بدي اشخط عليه او حط خط فوقه او تحته بتستخدم للشركات الي بدها تشخط ع سعر قديم وتحط سعر جديد مثلا
+    //         //     decoration: TextDecoration.none,
+    //         //     // backgroundColor: Colors.amberAccent , // الوان ورا الخط
+    //         //
+    //         //     shadows: [
+    //         //       // هي بتعطي ظل للخط
+    //         //       // هي بتحدد قديش الظل بدونها مابتشتغل// blurRedius
+    //         //       //  هي بتحدد موقع الظل على ال offset   // y x
+    //         //       Shadow(
+    //         //           color: Colors.black87,
+    //         //           blurRadius: 10.0,
+    //         //           offset: Offset(3, 20))
+    //         //     ]),
+    //       ),
+    //     )
+    //     )
+    // );
+

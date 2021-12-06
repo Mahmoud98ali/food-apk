@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1046414209673",
+    "project_id": "project-alali-market",
+    "storage_bucket": "project-alali-market.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046414209673:android:db5f6009a7758fd5508c58",
+        "android_client_info": {
+          "package_name": "com.example.flutter_cor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046414209673-0cn1im7coufflnhmjtjpcn37u4kl9nm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfq_j3pnUsqrbgkUkcaPpfT8UQ9fa32sQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1046414209673-0cn1im7coufflnhmjtjpcn37u4kl9nm6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
