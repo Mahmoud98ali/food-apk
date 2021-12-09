@@ -7,6 +7,9 @@ import 'package:flutter_cor/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:splashscreen/splashscreen.dart';
 
+import 'ProductOverview.dart';
+import 'Colors.dart';
+
 bool islogin;
 
 void main() async {
@@ -23,9 +26,9 @@ void main() async {
       debugShowCheckedModeBanner: false,
       home: new MyApp(),
       theme: ThemeData(
-          primaryColor: Color(0XFF2274A5),
-          // ignore: deprecated_member_use
-          buttonColor: Color(0XFF2274A5),
+          appBarTheme: AppBarTheme(color: Colors.red,backgroundColor: Colors.red,),
+          primaryColor: primaryColor,
+          scaffoldBackgroundColor: scaffoldBackgroundColor,
           textTheme: TextTheme(
               headline6: TextStyle(fontSize: 20, color: Colors.white))),
       routes: {
@@ -33,6 +36,7 @@ void main() async {
         "signup": (context) => SignUp(),
         "homepage": (context) => HomePage(),
         "addproduct": (context) => AddProduct(),
+        "productOverview" :(context)=> ProductOverview(),
       }));
 }
 

@@ -2,7 +2,13 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cor/DrawerFood2.dart';
 import 'package:flutter_cor/NavigationDrawerWidget.dart';
+import 'package:flutter_cor/ProductOverview.dart';
+import 'package:flutter_cor/search/search.dart';
+
+import '../Colors.dart';
+import 'Single_product.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -68,8 +74,6 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text('beans',style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold,letterSpacing: 1),),
                     Text('40\$/50 Gram',style: TextStyle(fontSize: 14,color: Colors.grey)),
-
-
                     Row(
 
                       children: [
@@ -140,7 +144,15 @@ class _HomePageState extends State<HomePage> {
           actions: [
             CircleAvatar(radius: 12,
               backgroundColor: Color(0XFFD9E5D6),
-            child: Icon(Icons.search,size: 17,color: Colors.black,),),
+            child: IconButton(
+            onPressed: (){
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context)=> Search(),));
+            },
+            icon:Icon(Icons.search,
+            size: 17,
+            color: Colors.black,)),),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: CircleAvatar(radius: 12,
@@ -150,7 +162,7 @@ class _HomePageState extends State<HomePage> {
           ],
           iconTheme: IconThemeData(color: Color(0XFF000501),),
           title: Text('Home Page',style: TextStyle(color: Color(0XFF000501),fontSize: 20),),
-          backgroundColor: Color(0XFF2274A5),
+          backgroundColor: Color(0xff51BBFE),
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
@@ -158,7 +170,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: (){
             Navigator.of(context).pushReplacementNamed("addproduct");
           },),
-        drawer: NavigationDrawerWidget(),
+        drawer: DrawerFood(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
           child: ListView(
@@ -182,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                         child: Column(
                           children: [
+
                             Padding(
                               padding: const EdgeInsets.only(right: 140,bottom: 10),
                               child: Container(
@@ -229,6 +242,7 @@ class _HomePageState extends State<HomePage> {
               ),
                      //..............................................
                 // tow Widget for column
+              SizedBox(height: 10,),
                Padding(
                  padding: const EdgeInsets.symmetric(vertical: 5),
                  child: Row(
@@ -241,18 +255,50 @@ class _HomePageState extends State<HomePage> {
                ),
                     //................................................
                    //three Widget for column
+              SizedBox(height: 10,),
              SingleChildScrollView(
                scrollDirection: Axis.horizontal,
                child: Row(
                  children: [
-                   legumesProducets(),
-                   legumesProducets(),
-                   legumesProducets(),
-                   legumesProducets(),
+                   SingleProduct(
+                     onTap:(){
+                       Navigator.of(context).push(MaterialPageRoute(
+                         builder: (context)=>ProductOverview(productImage:"images/p3.png",
+                             productName:"Bans"),));
+                     },
+                       productImage:"images/p3.png",
+                       productName:"Bans"
+                   ),
+
+                   SingleProduct(
+                       onTap:(){
+                         Navigator.of(context).push(MaterialPageRoute(
+                           builder: (context)=>ProductOverview
+                             (   productImage:"images/p4.png",
+                               productName:"Red Bans"),));
+                       },
+                       productImage:"images/p4.png",
+                       productName:"Red Bans"
+
+                   ),
+
+                   SingleProduct(
+                       onTap:(){
+                         Navigator.of(context).push(MaterialPageRoute(
+                           builder: (context)=>ProductOverview
+                             (productImage:"images/p5.png",
+                               productName:"Pistachios"),));
+                       },
+                       productImage:"images/p5.png",
+                       productName:"Pistachios"
+                   ),
+
                  ],
                ),
              ),
               //.........................................................
+              SizedBox(height: 10,),
+
            //four widget for  column
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -265,17 +311,118 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               //................................................
+              SizedBox(height: 10,),
+
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    legumesProducets(),
-                    legumesProducets(),
-                    legumesProducets(),
-                    legumesProducets(),
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v8.png",
+                                productName:"Cucumbers"),));
+                        },
+                        productImage:"images/v8.png",
+                        productName:"Cucumbers"
+                    ),
+
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v7.png",
+                                productName:"Potatoes"),));
+                        },
+                        productImage:"images/v7.png",
+                        productName:"Potatoes"
+
+                    ),
+
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v6.png",
+                                productName:"Tomatoes"),));
+                        },
+                        productImage:"images/v6.png",
+                        productName:"Tomatoes"
+                    ),
+
                   ],
                 ),
               ),
+
+              //..................................................
+                SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Fresh Fruits',style: TextStyle(fontSize: 22 ,letterSpacing: 1.3,fontWeight: FontWeight.bold),),
+                    Text('view all',style: TextStyle(fontSize: 18,color: Colors.grey),),
+                  ],
+                ),
+              ),
+              //................................................
+              SizedBox(height: 10,),
+
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v3.png",
+                                productName:"Watermelons"),));
+                        },
+                        productImage:"images/v3.png",
+                        productName:"Watermelons"
+                    ),
+
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v4.png",
+                                productName:"Freezes"),));
+                        },
+                        productImage:"images/v4.png",
+                        productName:"Freezes"
+
+                    ),
+
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/v5.png",
+                                productName:"Bananas"),));
+                        },
+                        productImage:"images/v5.png",
+                        productName:"Bananas"
+                    ),
+
+                    SingleProduct(
+                        onTap:(){
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context)=>ProductOverview
+                              (productImage:"images/g1.png",
+                                productName:"Grapes"),));
+                        },
+                        productImage:"images/g1.png",
+                        productName:"Grapes"
+                    ),
+                  ],
+                ),
+              ),
+
+
             ],
           ),
         )

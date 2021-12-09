@@ -104,14 +104,14 @@ class _LoginState extends State<Login> {
                   margin: EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      Text("if you hava not account "),
+                      Text("if you have not account "),
                       InkWell(
                           onTap: () {
                             Navigator.of(context)
                                 .pushReplacementNamed("signup");
                           },
                           child: Text(
-                            "clack here",
+                            "click here",
                             style: TextStyle(color: Colors.blue),
                           ))
                     ],
