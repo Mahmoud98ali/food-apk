@@ -194,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                                },
                                productPrice:legumesProductData.productPrice,
                                productImage:legumesProductData.productImage,
+                               productId:legumesProductData.productId,
                                productName:legumesProductData.productName
                            );
                          },
@@ -246,6 +247,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           productPrice:VegetablesProductData.productPrice,
                           productImage:VegetablesProductData.productImage,
+                          productId:VegetablesProductData.productId,
                           productName:VegetablesProductData.productName
                       );
                     },
@@ -302,6 +304,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           productPrice:freshFruitsProductData.productPrice,
                           productImage:freshFruitsProductData.productImage,
+                          productId:freshFruitsProductData.productId,
                           productName:freshFruitsProductData.productName
                       );
                     },

@@ -4,6 +4,7 @@ import 'package:flutter_cor/%20crud/addproduct.dart';
 import 'package:flutter_cor/home/homepage.dart';
 import 'package:flutter_cor/login.dart';
 import 'package:flutter_cor/providers/product_provider.dart';
+import 'package:flutter_cor/providers/review_cart_provider.dart';
 import 'package:flutter_cor/providers/user_provider.dart';
 import 'package:flutter_cor/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +31,9 @@ void main() async {
 
     ChangeNotifierProvider<UserProvider>(
       create: (context)=>UserProvider(),),
+
+    ChangeNotifierProvider<ReviewCartProvider>(
+      create: (context)=>ReviewCartProvider(),),
 
   ],
       child:MaterialApp(

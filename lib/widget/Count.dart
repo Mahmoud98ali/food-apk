@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cor/providers/review_cart_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../Colors.dart';
 
 class Count extends StatefulWidget {
 
+  String productName;
+  String productImage;
+  String productId;
 
+  int productPrice;
+
+  Count({this.productName,this.productImage,this.productPrice,this.productId});
   @override
   _CountState createState() => _CountState();
 }
@@ -14,6 +22,8 @@ class _CountState extends State<Count> {
   bool isTrue =false;
   @override
   Widget build(BuildContext context) {
+
+    ReviewCartProvider reviewCartProvider =Provider.of(context);
     return Container(
          width: 50,height: 30,
         decoration: BoxDecoration(
@@ -50,6 +60,13 @@ class _CountState extends State<Count> {
               setState(() {
                 isTrue=true;
               });
+              reviewCartProvider.addReviewCartData(
+                cartId: widget.productId,
+                cartImage: widget.productImage,
+                cartName: widget.productName,
+                cartPrice: widget.productPrice,
+                cartQuantity: count,
+                              );
             },
             child: Text("ADD",style: TextStyle(color: iconcolor)),
           ),

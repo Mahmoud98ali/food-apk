@@ -9,7 +9,8 @@ class SingleProduct extends StatelessWidget {
   final String productName ;
   final int productPrice ;
   final Function onTap ;
-  SingleProduct({this.productImage, this.productName, this.onTap, this.productPrice});
+  final String productId ;
+  SingleProduct({this.productImage, this.productName, this.onTap, this.productPrice, this.productId});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,14 @@ class SingleProduct extends StatelessWidget {
                               ),
                               SizedBox(width: 5,),
 
-                              Count(),
+                              Count(
+
+                                productName: productName,
+                                productImage: productImage,
+                                productPrice: productPrice,
+                                productId: productId,
+
+                              ),
                             ],
                           )
 

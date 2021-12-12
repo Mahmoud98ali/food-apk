@@ -15,6 +15,7 @@ class ProductProvider with ChangeNotifier{
       productImage: element.get("productimage"),
       productName: element.get("productName"),
       productPrice: element.get("productPrice"),
+      productId: element.get("productId"),
     );
     search.add(productModel);
   }
