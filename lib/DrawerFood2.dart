@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cor/My_profile/my_profile.dart';
+import 'package:flutter_cor/review/review.dart';
 
 import 'Colors.dart';
+import 'login.dart';
 
 class DrawerFood extends StatelessWidget {
 
@@ -59,7 +62,10 @@ class DrawerFood extends StatelessWidget {
               ],
             )),
             listTile(icon:Icons.home_outlined, title:"Home",),
-            listTile(icon:Icons.shop_outlined, title:"Review Cart",),
+            listTile(icon:Icons.shop_outlined, title:"Review Cart",onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context)=>ReviewCart()));
+            }),
             listTile(icon:Icons.person_outlined, title:"My Profile",onTap: (){
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context)=>MyProfile()));
@@ -68,7 +74,9 @@ class DrawerFood extends StatelessWidget {
             listTile(icon:Icons.star_outlined, title:"Rating & Review",),
             listTile(icon:Icons.favorite_outlined, title:"Wishlist",),
             listTile(icon:Icons.copy_outlined, title:"Raise & Complaint",),
-            listTile(icon:Icons.format_quote_outlined, title:"FAQs",),
+            listTile(icon:Icons.format_quote_outlined, title:"FAQs",
+
+            ),
 
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),

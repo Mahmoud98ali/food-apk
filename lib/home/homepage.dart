@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cor/DrawerFood2.dart';
 import 'package:flutter_cor/NavigationDrawerWidget.dart';
 import 'package:flutter_cor/ProductOverview.dart';
+import 'package:flutter_cor/providers/product_provider.dart';
 import 'package:flutter_cor/search/search.dart';
+import 'package:provider/provider.dart';
 
 import '../Colors.dart';
 import 'Single_product.dart';
@@ -21,120 +23,26 @@ class HomePage extends StatefulWidget {
 
 
 class _HomePageState extends State<HomePage> {
+  ProductProvider productProvider ;
 
-  List notes =[
-    {"note" : "the product 1",
-      "image" :"images/m1.jpeg" },
-    {"note" : "the product 2",
-      "image" :"images/m2.jpg"
-    },
-    {"note":"the product 3",
-      "image" :"images/m3.jpg"
-    },
-    {"note" : "the product 4",
-      "image" :"images/m4.jpg"
-    },
-  ];
-
-
-  getUser(){
+   getUser(){
   var user = FirebaseAuth.instance.currentUser ;
   print(user.email);
   }
 
   @override
   void initState() {
+    ProductProvider productProvider = Provider.of(context, listen: false);
+    productProvider.fatchlegumesproductData();
+    productProvider.fatchVegetablesproductData();
+    productProvider.fatchFreshProductData();
     getUser();
     super.initState();
   }
 
-
-
-  Widget legumesProducets(){
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 6,),
-      width: 160,height: 220,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              flex: 2 ,
-              child: Image.asset("images/p3.png")),
-          Expanded(flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('beans',style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold,letterSpacing: 1),),
-                    Text('40\$/50 Gram',style: TextStyle(fontSize: 14,color: Colors.grey)),
-                    Row(
-
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 5),
-                            width: 50,height: 30,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(flex: 4,child: Text("50 Gram")),
-                                Expanded(flex: 1,child: Icon(Icons.arrow_drop_down,size: 20,color: Color(0XFFF6AE2D),))
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          child: Container(
-                            width: 50,height: 30,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.remove,size: 18,color: Color(0XFFF6AE2D)),
-                                Text('1',style: TextStyle(color: Color(0XFFF6AE2D),fontWeight: FontWeight.bold),),
-                                Icon(Icons.add,size: 18,color: Color(0XFFF6AE2D)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-
-
-
-                    // Container(height: 25,width: 100,child: OutlineButton(child: Row(
-                    //  children: [
-
-                    //   ],
-                    // ),onPressed: (){})),
-                    //
-
-                  ],
-                ),
-              )
-          ),
-        ],
-      ),
-    );
-  }
-
-
   @override
   Widget build(BuildContext context)  {
+     productProvider = Provider.of(context);
 
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -142,22 +50,23 @@ class _HomePageState extends State<HomePage> {
     backgroundColor: Color(0XFFF7F7FF),
         appBar: AppBar(
           actions: [
-            CircleAvatar(radius: 12,
-              backgroundColor: Color(0XFFD9E5D6),
+            CircleAvatar(radius: 15,
+              backgroundColor: drawerColor,
             child: IconButton(
             onPressed: (){
               Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context)=> Search(),));
+                  MaterialPageRoute(builder: (context)=> Search(
+                    search: productProvider.getAllProductDataList
+                  ),));
             },
             icon:Icon(Icons.search,
-            size: 17,
-            color: Colors.black,)),),
+            size: 19,
+            color: prColor,)),),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: CircleAvatar(radius: 12,
-                  backgroundColor: Color(0XFFD9E5D6),
-                child: Icon(Icons.shop,size: 17,color: Colors.black,),),
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              child: CircleAvatar(radius: 15,
+                  backgroundColor: drawerColor,
+                child: Icon(Icons.shop,size: 17,color: prColor,),),
             ),
           ],
           iconTheme: IconThemeData(color: Color(0XFF000501),),
@@ -249,7 +158,20 @@ class _HomePageState extends State<HomePage> {
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
                      Text('legumes',style: TextStyle(fontSize: 22 ,letterSpacing: 1.3,fontWeight: FontWeight.bold),),
-                     Text('view all',style: TextStyle(fontSize: 18,color: Colors.grey),),
+                     GestureDetector(
+                       onTap: (){
+                         Navigator.of(context).push(
+                             MaterialPageRoute(
+                                 builder: (context)=>Search(
+                                   search: productProvider.getlegumesProductDataList
+                                 ),
+                             ));
+                       },
+                         child: Text
+                           ('view all',
+                           style: TextStyle(fontSize: 18,
+                               color: Colors.grey),
+                         )),
                    ],
                  ),
                ),
@@ -259,41 +181,23 @@ class _HomePageState extends State<HomePage> {
              SingleChildScrollView(
                scrollDirection: Axis.horizontal,
                child: Row(
-                 children: [
-                   SingleProduct(
-                     onTap:(){
-                       Navigator.of(context).push(MaterialPageRoute(
-                         builder: (context)=>ProductOverview(productImage:"images/p3.png",
-                             productName:"Bans"),));
-                     },
-                       productImage:"images/p3.png",
-                       productName:"Bans"
-                   ),
-
-                   SingleProduct(
-                       onTap:(){
-                         Navigator.of(context).push(MaterialPageRoute(
-                           builder: (context)=>ProductOverview
-                             (   productImage:"images/p4.png",
-                               productName:"Red Bans"),));
-                       },
-                       productImage:"images/p4.png",
-                       productName:"Red Bans"
-
-                   ),
-
-                   SingleProduct(
-                       onTap:(){
-                         Navigator.of(context).push(MaterialPageRoute(
-                           builder: (context)=>ProductOverview
-                             (productImage:"images/p5.png",
-                               productName:"Pistachios"),));
-                       },
-                       productImage:"images/p5.png",
-                       productName:"Pistachios"
-                   ),
-
-                 ],
+                 children: productProvider.getlegumesProductDataList
+                     .map(
+                         (legumesProductData) {
+                           return SingleProduct(
+                               onTap:(){
+                                 Navigator.of(context).push(MaterialPageRoute(
+                                   builder: (context)=>ProductOverview(
+                                       productPrice:legumesProductData.productPrice,
+                                       productImage:legumesProductData.productImage,
+                                       productName:legumesProductData.productName),));
+                               },
+                               productPrice:legumesProductData.productPrice,
+                               productImage:legumesProductData.productImage,
+                               productName:legumesProductData.productName
+                           );
+                         },
+                         ).toList(),
                ),
              ),
               //.........................................................
@@ -306,7 +210,20 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('vegetables',style: TextStyle(fontSize: 22 ,letterSpacing: 1.3,fontWeight: FontWeight.bold),),
-                    Text('view all',style: TextStyle(fontSize: 18,color: Colors.grey),),
+                    GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context)=>Search(
+                                    search: productProvider.getVegetablesProductDataList
+                                ),
+                              ));
+                        },
+                        child: Text
+                          ('view all',
+                          style: TextStyle(fontSize: 18,
+                              color: Colors.grey),
+                        ))
                   ],
                 ),
               ),
@@ -316,42 +233,28 @@ class _HomePageState extends State<HomePage> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v8.png",
-                                productName:"Cucumbers"),));
-                        },
-                        productImage:"images/v8.png",
-                        productName:"Cucumbers"
-                    ),
+                  children: productProvider.getVegetablesProductDataList
+                      .map(
+                        (VegetablesProductData) {
+                      return SingleProduct(
+                          onTap:(){
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context)=>ProductOverview(
+                                  productPrice:VegetablesProductData.productPrice,
+                                  productImage:VegetablesProductData.productImage,
+                                  productName:VegetablesProductData.productName),));
+                          },
+                          productPrice:VegetablesProductData.productPrice,
+                          productImage:VegetablesProductData.productImage,
+                          productName:VegetablesProductData.productName
+                      );
+                    },
+                  ).toList(),
 
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v7.png",
-                                productName:"Potatoes"),));
-                        },
-                        productImage:"images/v7.png",
-                        productName:"Potatoes"
 
-                    ),
 
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v6.png",
-                                productName:"Tomatoes"),));
-                        },
-                        productImage:"images/v6.png",
-                        productName:"Tomatoes"
-                    ),
 
-                  ],
+
                 ),
               ),
 
@@ -363,7 +266,20 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Fresh Fruits',style: TextStyle(fontSize: 22 ,letterSpacing: 1.3,fontWeight: FontWeight.bold),),
-                    Text('view all',style: TextStyle(fontSize: 18,color: Colors.grey),),
+                    GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context)=>Search(
+                                    search: productProvider.getFreshProductDataList
+                                ),
+                              ));
+                        },
+                        child: Text
+                          ('view all',
+                          style: TextStyle(fontSize: 18,
+                              color: Colors.grey),
+                        ))
                   ],
                 ),
               ),
@@ -373,52 +289,23 @@ class _HomePageState extends State<HomePage> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v3.png",
-                                productName:"Watermelons"),));
-                        },
-                        productImage:"images/v3.png",
-                        productName:"Watermelons"
-                    ),
-
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v4.png",
-                                productName:"Freezes"),));
-                        },
-                        productImage:"images/v4.png",
-                        productName:"Freezes"
-
-                    ),
-
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/v5.png",
-                                productName:"Bananas"),));
-                        },
-                        productImage:"images/v5.png",
-                        productName:"Bananas"
-                    ),
-
-                    SingleProduct(
-                        onTap:(){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context)=>ProductOverview
-                              (productImage:"images/g1.png",
-                                productName:"Grapes"),));
-                        },
-                        productImage:"images/g1.png",
-                        productName:"Grapes"
-                    ),
-                  ],
+                  children: productProvider.getFreshProductDataList
+                      .map(
+                        (freshFruitsProductData) {
+                      return SingleProduct(
+                          onTap:(){
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context)=>ProductOverview(
+                                  productPrice:freshFruitsProductData.productPrice,
+                                  productImage:freshFruitsProductData.productImage,
+                                  productName:freshFruitsProductData.productName),));
+                          },
+                          productPrice:freshFruitsProductData.productPrice,
+                          productImage:freshFruitsProductData.productImage,
+                          productName:freshFruitsProductData.productName
+                      );
+                    },
+                  ).toList(),
                 ),
               ),
 

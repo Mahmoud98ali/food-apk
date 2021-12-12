@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cor/%20crud/addproduct.dart';
 import 'package:flutter_cor/home/homepage.dart';
 import 'package:flutter_cor/login.dart';
+import 'package:flutter_cor/providers/product_provider.dart';
+import 'package:flutter_cor/providers/user_provider.dart';
 import 'package:flutter_cor/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 import 'ProductOverview.dart';
@@ -21,13 +24,21 @@ void main() async {
   } else {
     islogin = true;
   }
-  runApp(new MaterialApp(
+  runApp( MultiProvider(providers: [
+    ChangeNotifierProvider<ProductProvider>(
+      create: (context)=>ProductProvider(),),
+
+    ChangeNotifierProvider<UserProvider>(
+      create: (context)=>UserProvider(),),
+
+  ],
+      child:MaterialApp(
 
       debugShowCheckedModeBanner: false,
       home: new MyApp(),
       theme: ThemeData(
-          appBarTheme: AppBarTheme(color: Colors.red,backgroundColor: Colors.red,),
-          primaryColor: primaryColor,
+
+          primaryColor: prColor,
           scaffoldBackgroundColor: scaffoldBackgroundColor,
           textTheme: TextTheme(
               headline6: TextStyle(fontSize: 20, color: Colors.white))),
@@ -37,7 +48,7 @@ void main() async {
         "homepage": (context) => HomePage(),
         "addproduct": (context) => AddProduct(),
         "productOverview" :(context)=> ProductOverview(),
-      }));
+      })));
 }
 
 class MyApp extends StatefulWidget {
@@ -48,20 +59,23 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return new SplashScreen(
-      useLoader: false,
-      seconds: 7,
-      backgroundColor: Colors.white38,
-      image: new Image.asset("images/market.gif"),
-      photoSize: 220,
-      navigateAfterSeconds: ForSplash(),
-    );
+    return   SplashScreen(
+        useLoader: false,
+        seconds: 7,
+        backgroundColor: Colors.white,
+        image: new Image.asset("images/market.gif"),
+        photoSize: 220,
+        navigateAfterSeconds: ForSplash(),
+      );
+
   }
 }
 
 class ForSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return islogin == false ? Login() : HomePage();
+    return  islogin == false? Login():HomePage();
+
+
   }
 }

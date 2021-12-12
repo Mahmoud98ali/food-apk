@@ -3,6 +3,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cor/home/homepage.dart';
+import 'package:flutter_cor/providers/user_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key key}) : super(key: key);
@@ -12,8 +16,12 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+
   GlobalKey<FormState> formstate = new GlobalKey<FormState>();
     String myusername , mypassword, myemail ;
+
+
+
   singUp() async {
     var formdata = formstate.currentState;
     if (formdata.validate()) {
@@ -21,8 +29,10 @@ class _SignUpState extends State<SignUp> {
       try {
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: myemail,
-            password: mypassword
+            password: mypassword,
+
         );
+
         return userCredential ;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -31,6 +41,8 @@ class _SignUpState extends State<SignUp> {
         } else if (e.code == 'email-already-in-use') {
           AwesomeDialog(context: context,title: "Error",body:Text("The account already exists for that email."))..show();
         }
+
+
       } catch (e) {
         print(e);
       }
@@ -41,6 +53,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: ListView(
       children: [
@@ -125,13 +138,13 @@ class _SignUpState extends State<SignUp> {
                   margin: EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      Text("if you hava ِِِAccount "),
+                      Text("if you have ِِِAccount "),
                       InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed("login");
                           },
                           child: Text(
-                            "clack here",
+                            "click here",
                             style: TextStyle(color: Colors.blue),
                           ))
                     ],
@@ -145,12 +158,11 @@ class _SignUpState extends State<SignUp> {
                     ),
                     onPressed: () async {
                       UserCredential response = await singUp();
-
                       if(response != null ){
-                        Navigator.of(context).pushReplacementNamed("homepage");
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>HomePage()));
                       }else {
                         print("==========================");
-                        print("Sing Up Faild");
+                        print("Sing Up Failed");
                         print("==========================");
                       }
                       ;

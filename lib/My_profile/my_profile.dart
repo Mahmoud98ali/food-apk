@@ -1,11 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cor/DrawerFood2.dart';
 import '../Colors.dart';
+import '../login.dart';
 
 
-class MyProfile extends StatelessWidget {
+class MyProfile extends StatefulWidget {
 
-  Widget listTile({IconData icon ,String title}){
+  @override
+  State<MyProfile> createState() => _MyProfileState();
+}
+
+class _MyProfileState extends State<MyProfile> {
+  Widget listTile({IconData icon ,String title,Function onTap}){
     return Column(
       children: [
         Divider(height: 1,),
@@ -34,20 +41,21 @@ class MyProfile extends StatelessWidget {
           Column(
             children: [
               Container(
-                height: 100,
+                height: 90,
                 color:Color(0xff51BBFE) ,
               ),
 
               Container(
-                height: 548,
+                height: 554,
                 width: double.infinity,
-
                 padding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),
                 decoration: BoxDecoration(
                   color: drawerColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(200),
                     topRight: Radius.circular(30),
+                    bottomRight: Radius.circular(100),
+                    bottomLeft: Radius.circular(20),
                   )
                 ),
                child: ListView(
@@ -108,19 +116,24 @@ class MyProfile extends StatelessWidget {
                        title: "Terms & Conditions"),
                    listTile(
                        icon: Icons.policy_outlined, title: "Privacy Policy"),
-                   listTile(icon: Icons.add_chart, title: "About"),
+                   listTile(icon: Icons.add_chart, title: "About",onTap: (){}),
                    listTile(
-                       icon: Icons.exit_to_app_outlined, title: "Log Out"),
+                       icon: Icons.exit_to_app_outlined, title: "Log Out",
+                       onTap: ()async{
+                         await FirebaseAuth.instance.signOut();
+                         Navigator.of(context).pushReplacement(MaterialPageRoute(
+                             builder: (context)=>Login()));}),
+
                  ],
                ),
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 40,left: 30),
+            padding: const EdgeInsets.only(top: 80,left: 25),
             child: CircleAvatar(
-              radius: 47,
-              backgroundColor: textcolor  ,
+              radius: 48,
+              backgroundColor: prColor  ,
               child: CircleAvatar(
                 radius: 45,
                 backgroundImage: AssetImage("images/main.png"),

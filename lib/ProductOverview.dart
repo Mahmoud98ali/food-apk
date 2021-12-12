@@ -8,8 +8,9 @@ class ProductOverview extends StatefulWidget {
 
     final String productName ;
     final String productImage ;
+    final int productPrice;
 
-  const ProductOverview({ this.productName, this.productImage}) ;
+  const ProductOverview({ this.productName, this.productImage, this.productPrice}) ;
   @override
   State<ProductOverview> createState() => _ProductOverviewState();
 }
@@ -60,14 +61,14 @@ class _ProductOverviewState extends State<ProductOverview> {
         children: [
           bonntonNavigatorBar(
             backgroundColor: textcolor,
-            color: Colors.white70,
+            color: Colors.white,
             iconColor: Colors.grey,
             title: "Add To WishList",
             iconData: Icons.favorite_outline,
           ),
 
           bonntonNavigatorBar(
-            backgroundColor: Color(0XFF2274A5),
+            backgroundColor: prColor,
             color: Colors.white,
             iconColor: Colors.white,
             title: "Go To Cart",
@@ -77,9 +78,10 @@ class _ProductOverviewState extends State<ProductOverview> {
       ),
       appBar: AppBar(
         iconTheme: IconThemeData(color: textcolor),
-        backgroundColor: Color(0XFF2274A5),
+        backgroundColor: prColor,
         title: Text('Product Overview',style: TextStyle(color: Color(0XFF000501),fontSize: 20),),
       ),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
 
@@ -91,7 +93,7 @@ class _ProductOverviewState extends State<ProductOverview> {
                   children: [
                     ListTile(
                       title: Text(widget.productName),
-                      subtitle: Text('\$50'),
+                      subtitle: Text("\$50"),
                     ),
                     Container(
                       height: 250,

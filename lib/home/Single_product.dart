@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cor/widget/Count.dart';
 
 import '../Colors.dart';
 
@@ -6,8 +7,9 @@ class SingleProduct extends StatelessWidget {
 
   final String productImage ;
   final String productName ;
+  final int productPrice ;
   final Function onTap ;
-  SingleProduct({this.productImage, this.productName, this.onTap});
+  SingleProduct({this.productImage, this.productName, this.onTap, this.productPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class SingleProduct extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(productName,style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold,letterSpacing: 1),),
-                          Text('40\$/50 Gram',style: TextStyle(fontSize: 14,color: Colors.grey)),
+                          Text('$productPrice\$/50 Gram',style: TextStyle(fontSize: 14,color: Colors.grey)),
                           Row(
 
                             children: [
@@ -66,34 +68,11 @@ class SingleProduct extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 5,),
-                              Expanded(
-                                child: Container(
-                                  width: 50,height: 30,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.remove,size: 18,color: iconcolor),
-                                      Text('1',style: TextStyle(color: iconcolor,fontWeight: FontWeight.bold),),
-                                      Icon(Icons.add,size: 18,color: iconcolor),
-                                    ],
-                                  ),
-                                ),
-                              ),
+
+                              Count(),
                             ],
                           )
 
-
-
-                          // Container(height: 25,width: 100,child: OutlineButton(child: Row(
-                          //  children: [
-
-                          //   ],
-                          // ),onPressed: (){})),
-                          //
 
                         ],
                       ),
