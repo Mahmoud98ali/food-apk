@@ -3,6 +3,8 @@ class ProductModel{
   String productImage;
   int  productPrice;
   String productId;
-  ProductModel({this.productPrice,this.productImage,this.productId,this.productName});
+  int productQuantity;
+  List<dynamic>productUnit;
+  ProductModel({this.productUnit,this.productPrice,this.productQuantity,this.productImage,this.productId,this.productName});
 
 }
