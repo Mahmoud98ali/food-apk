@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cor/providers/wish_list_provider.dart';
+import 'package:flutter_cor/review/review.dart';
+import 'package:flutter_cor/widget/Count.dart';
+import 'package:provider/provider.dart';
 import 'Colors.dart';
 
 
@@ -10,7 +16,8 @@ class ProductOverview extends StatefulWidget {
     final String productImage ;
     final int productPrice;
 
-  const ProductOverview({ this.productName, this.productImage, this.productPrice}) ;
+    final String productId;
+  const ProductOverview({ this.productName, this.productImage, this.productPrice,this.productId}) ;
   @override
   State<ProductOverview> createState() => _ProductOverviewState();
 }
@@ -39,6 +46,7 @@ class _ProductOverviewState extends State<ProductOverview> {
                 iconData,
                 size: 20,
                 color: iconColor,
+
               ),
               SizedBox(
                 width: 5,
@@ -54,8 +62,28 @@ class _ProductOverviewState extends State<ProductOverview> {
     );
   }
 
+  bool wishListBool = false;
+  
+  
+  getWishListBool(){
+    FirebaseFirestore.instance.collection("WishList").doc(FirebaseAuth.instance.currentUser.uid)
+    .collection("YourWishList").doc(widget.productId)
+        .get().then((value) => {
+      if (value.exists)
+        {
+          setState(
+                () {
+              wishListBool = value.get("wishList");
+            },
+          ),
+        }
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
+    WishListProvider wishListProvider = Provider.of(context);
+    getWishListBool();
     return Scaffold(
       bottomNavigationBar: Row(
         children: [
@@ -64,7 +92,23 @@ class _ProductOverviewState extends State<ProductOverview> {
             color: Colors.white,
             iconColor: Colors.grey,
             title: "Add To WishList",
-            iconData: Icons.favorite_outline,
+            iconData: wishListBool==false?Icons.favorite_outline:Icons.favorite,
+            onTap: (){
+              setState(() {
+                wishListBool =! wishListBool;
+              });
+              if(wishListBool==true){
+                wishListProvider.addWishListData(
+                  wishListId: widget.productId,
+                  wishListImage: widget.productImage,
+                  wishListName: widget.productName,
+                  wishListPrice: widget.productPrice,
+                  wishListQuantity: 2
+                );
+              }else{
+                wishListProvider.deleteWishList(widget.productId);
+              }
+            }
           ),
 
           bonntonNavigatorBar(
@@ -73,6 +117,11 @@ class _ProductOverviewState extends State<ProductOverview> {
             iconColor: Colors.white,
             title: "Go To Cart",
             iconData: Icons.shop_outlined,
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context)=>ReviewCart(),
+              ));
+            }
           ),
         ],
       ),
@@ -96,7 +145,7 @@ class _ProductOverviewState extends State<ProductOverview> {
                       subtitle: Text("\$50"),
                     ),
                     Container(
-                      height: 250,
+                      height: 235,
                       padding: EdgeInsets.all(40),
                       child: Image.asset(widget.productImage),
                     ),
@@ -132,21 +181,32 @@ class _ProductOverviewState extends State<ProductOverview> {
                               ],
                             ),
 
-                            Text("\$50"),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30)
-                              ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.add,size: 18,color: iconcolor,),
-                                Text("Add",style: TextStyle(color: iconcolor),)
-                              ],
+                            Text("\$${widget.productPrice}"),
+                            Count(
+
+                              productName: widget.productName,
+                              productImage: widget.productImage,
+                              productPrice: widget.productPrice,
+                              productId: widget.productId,
+
                             ),
-                            ),
+
+                            // Container(
+                            //   padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+                            //   decoration: BoxDecoration(
+                            //     border: Border.all(color: Colors.grey),
+                            //     borderRadius: BorderRadius.circular(30)
+                            //   ),
+                            // child: Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     Icon(Icons.add,size: 18,color: iconcolor,),
+                            //     Text("Add",style: TextStyle(color: iconcolor),)
+                            //   ],
+                            // ),
+                            // ),
+                            //
+
                           ],
                         ),
 

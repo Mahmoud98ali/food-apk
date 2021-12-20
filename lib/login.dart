@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cor/home/homepage.dart';
+import 'package:flutter_cor/screens/home/home/homepage.dart';
 import 'package:flutter_cor/providers/user_provider.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';

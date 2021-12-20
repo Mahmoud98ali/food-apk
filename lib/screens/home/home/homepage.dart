@@ -11,7 +11,7 @@ import 'package:flutter_cor/review/review.dart';
 import 'package:flutter_cor/search/search.dart';
 import 'package:provider/provider.dart';
 
-import '../Colors.dart';
+import '../../../Colors.dart';
 import 'Single_product.dart';
 
 

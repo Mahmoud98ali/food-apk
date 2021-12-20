@@ -1,22 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cor/DrawerFood2.dart';
+import 'package:flutter_cor/models/userModel.dart';
+import 'package:flutter_cor/providers/user_provider.dart';
 import '../Colors.dart';
 import '../login.dart';
 
 
+
 class MyProfile extends StatefulWidget {
+  UserProvider userProvider;
+  MyProfile({this.userProvider});
 
   @override
   State<MyProfile> createState() => _MyProfileState();
 }
 
 class _MyProfileState extends State<MyProfile> {
+    @override
   Widget listTile({IconData icon ,String title,Function onTap}){
     return Column(
       children: [
         Divider(height: 1,),
         ListTile(
+          onTap: (){},
           leading: Icon(icon),
           title: Text(title),
           trailing: Icon(Icons.arrow_forward_ios),
@@ -27,6 +34,7 @@ class _MyProfileState extends State<MyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    var userData = widget.userProvider.currentUserData;
     return Scaffold(
        backgroundColor: Color(0xff51BBFE),
       appBar:AppBar(
@@ -35,7 +43,9 @@ class _MyProfileState extends State<MyProfile> {
         title: Text('My Profile',
         style: TextStyle(fontSize: 18,color: textcolor)),
       ) ,
-      drawer: DrawerFood(),
+      drawer: DrawerFood(
+        userProvider:widget.userProvider ,
+      ),
       body: Stack(
         children: [
           Column(
@@ -74,8 +84,8 @@ class _MyProfileState extends State<MyProfile> {
                                mainAxisAlignment: MainAxisAlignment.center,
                                crossAxisAlignment: CrossAxisAlignment.start,
                                children: [
-                                 Text(
-                                   "AL-ALi Market",
+                                 Text(userData.userName==null?
+                                   "No Sing":userData.userName,
                                    style: TextStyle(
                                      fontSize: 14,
                                      fontWeight: FontWeight.w600,
@@ -83,7 +93,8 @@ class _MyProfileState extends State<MyProfile> {
                                    ),
                                  ),
                                  SizedBox(height: 10,),
-                                 Text("AlaliMarket@hotmail.com"),
+                                 Text(userData.userEmail==null?
+                                     "AlaliMarket@hotmail.com":userData.userEmail,),
                                ],
                              ),
                              CircleAvatar(
@@ -119,10 +130,12 @@ class _MyProfileState extends State<MyProfile> {
                    listTile(icon: Icons.add_chart, title: "About",onTap: (){}),
                    listTile(
                        icon: Icons.exit_to_app_outlined, title: "Log Out",
-                       onTap: ()async{
-                         await FirebaseAuth.instance.signOut();
-                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                             builder: (context)=>Login()));}),
+                     onTap: ()async{
+                       await FirebaseAuth.instance.signOut();
+                       Navigator.of(context).pushReplacement(MaterialPageRoute(
+                           builder: (context)=>Login()));
+                     },
+                             ),
 
                  ],
                ),
@@ -136,7 +149,8 @@ class _MyProfileState extends State<MyProfile> {
               backgroundColor: prColor  ,
               child: CircleAvatar(
                 radius: 45,
-                backgroundImage: AssetImage("images/main.png"),
+                backgroundImage: AssetImage(userData.userImage==null?
+                    "images/main.png":userData.userImage),
                 backgroundColor: drawerColor,
               ),
             ),

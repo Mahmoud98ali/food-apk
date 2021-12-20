@@ -3,7 +3,7 @@ import 'package:flutter_cor/models/product_model.dart';
 import 'package:flutter_cor/widget/Count.dart';
 import 'package:flutter_cor/widget/product_unit.dart';
 
-import '../Colors.dart';
+import '../../../Colors.dart';
 
 class SingleProduct extends StatefulWidget {
 

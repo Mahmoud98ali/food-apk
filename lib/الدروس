@@ -123,7 +123,7 @@ class ListNotes extends StatelessWidget{
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cor/%20crud/addproduct.dart';
-import 'package:flutter_cor/home/homepage.dart';
+import 'package:flutter_cor/screens.home.home/homepage.dart';
 import 'package:flutter_cor/login.dart';
 import 'package:flutter_cor/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -172,7 +172,7 @@ class ForSplash extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: islogin == false ? Login() : HomePage(),
+        screens.home.home: islogin == false ? Login() : HomePage(),
         // هي ال theme ستاندر لكتير شغلات ممكن خطوط او ازرار الونها ..الخ
         theme: ThemeData(
             primaryColor: Colors.green,
@@ -206,7 +206,7 @@ Drawer(
                 accountEmail: Text("mahmoudad2013@hotmail.com"),
                 arrowColor: Colors.red,
               ),
-              ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+              ListTile( title: Text("Home Page"), leading: Icon(Icons.screens.home.home),onTap: (){},),
               ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
               ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
               ListTile( title: Text("Logout"), leading: Icon(Icons.logout),
@@ -1172,7 +1172,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false ,
-      home: Test(),
+      screens.home.home: Test(),
       routes: {
         "one": (context) => One(),
         "tow": (context) => Tow(),
@@ -1758,7 +1758,7 @@ class TestState extends State<Test> with SingleTickerProviderStateMixin {
                 Tab(child: Text("الصفحات الرسمية"),
                   icon: Icon(Icons.print),),
               Tab(child: Text("المناظرات"),
-                icon: Icon(Icons.home),),
+                icon: Icon(Icons.screens.home.home),),
             ],
             ),
         ),
@@ -1809,7 +1809,7 @@ class TestState extends State<Test> {
                 Tab(child: Text("الصفحات الرسمية"),
                   icon: Icon(Icons.print),),
               Tab(child: Text("المناظرات"),
-                icon: Icon(Icons.home),),
+                icon: Icon(Icons.screens.home.home),),
             ],
             ),
         ),
@@ -1901,7 +1901,7 @@ class TestState extends State<Test>{
                 accountEmail: Text("mahmoudad2013@hotmail.com"),
                 arrowColor: Colors.red,
               ),
-              ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+              ListTile( title: Text("Home Page"), leading: Icon(Icons.screens.home.home),onTap: (){},),
               ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
               ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
               ListTile( title: Text("Logout"), leading: Icon(Icons.logout),onTap: (){},),
@@ -1989,7 +1989,7 @@ Drawer
                     accountEmail: Text("mahmoudad2013@hotmail.com"),
                   arrowColor: Colors.red,
                 ),
-                 ListTile( title: Text("Home Page"), leading: Icon(Icons.home),onTap: (){},),
+                 ListTile( title: Text("Home Page"), leading: Icon(Icons.screens.home.home),onTap: (){},),
                 ListTile( title: Text("About"), leading: Icon(Icons.help_outline),onTap: (){},),
                 ListTile( title: Text("Help"), leading: Icon(Icons.live_help_outlined),onTap: (){},),
                 ListTile( title: Text("Logout"), leading: Icon(Icons.logout),onTap: (){},),
